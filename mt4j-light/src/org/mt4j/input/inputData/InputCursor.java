@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputData;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -29,7 +30,6 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
-import org.mt4j.util.math.Vector3D;
 
 /**
  * This is a container for AbstractCursorInputEvt Events with a unique ID,
@@ -485,8 +485,8 @@ public class InputCursor {
 	 * 
 	 * @return the position
 	 */
-	public Vector3D getPosition() {
-		return new Vector3D(getCurrentEvtPosX(), getCurrentEvtPosY());
+	public Point2D.Float getPosition() {
+		return new Point2D.Float(getCurrentEvtPosX(), getCurrentEvtPosY());
 	}
 
 	/**
@@ -534,8 +534,8 @@ public class InputCursor {
 	 * 
 	 * @return the start position
 	 */
-	public Vector3D getStartPosition() {
-		return new Vector3D(getStartPosX(), getStartPosY());
+	public Point2D.Float getStartPosition() {
+		return new Point2D.Float(getStartPosX(), getStartPosY());
 	}
 
 	/**
@@ -665,8 +665,8 @@ public class InputCursor {
 	 * 
 	 * if (prev == null) prev = posEvt;
 	 * 
-	 * Vector3D pos = new Vector3D(posEvt.getPosX(), posEvt.getPosY(), 0); Vector3D
-	 * prevPos = new Vector3D(prev.getPosX(), prev.getPosY(), 0);
+	 * Point2D.Float pos = new Point2D.Float(posEvt.getPosX(), posEvt.getPosY(), 0); Point2D.Float
+	 * prevPos = new Point2D.Float(prev.getPosX(), prev.getPosY(), 0);
 	 * 
 	 * float invWidth = 1.0f/MT4jSettings.getInstance().getScreenWidth();
 	 * 
@@ -683,8 +683,8 @@ public class InputCursor {
 	 * 
 	 * if (prev == null) prev = posEvt;
 	 * 
-	 * Vector3D pos = new Vector3D(posEvt.getPosX(), posEvt.getPosY(), 0); Vector3D
-	 * prevPos = new Vector3D(prev.getPosX(), prev.getPosY(), 0);
+	 * Point2D.Float pos = new Point2D.Float(posEvt.getPosX(), posEvt.getPosY(), 0); Point2D.Float
+	 * prevPos = new Point2D.Float(prev.getPosX(), prev.getPosY(), 0);
 	 * 
 	 * float invHeight = 1.0f/MT4jSettings.getInstance().getScreenHeight();
 	 * 
@@ -693,16 +693,16 @@ public class InputCursor {
 	 * mouseNormY); return mouseVelY; }
 	 */
 
-	public Vector3D getDirection() {
+	public Point2D.Float getDirection() {
 		if (this.events.isEmpty() || this.events.size() < 2)
-			return Vector3D.ZERO_VECTOR;
+			return new Point2D.Float(0, 0);
 
 		AbstractCursorInputEvt posEvt = events.get(events.size() - 1);
 		AbstractCursorInputEvt prev = events.get(events.size() - 2);
 		if (prev == null)
 			prev = posEvt;
 		// TODO normalize direction or not?
-		return new Vector3D(posEvt.getX() - prev.getX(), posEvt.getY() - prev.getY(), 0);
+		return new Point2D.Float(posEvt.getX() - prev.getX(), posEvt.getY() - prev.getY());
 	}
 
 	/**
@@ -712,7 +712,7 @@ public class InputCursor {
 	 * 
 	 * @return the velocity vector
 	 */
-	public Vector3D getVelocityVector() {
+	public Point2D.Float getVelocityVector() {
 		return getVelocityVector(120);
 	}
 
@@ -725,7 +725,7 @@ public class InputCursor {
 	 * 
 	 * @return the velocity vector
 	 */
-	public Vector3D getVelocityVector(int millisAgo) {
+	public Point2D.Float getVelocityVector(int millisAgo) {
 		List<AbstractCursorInputEvt> lastEvents = getEvents(millisAgo);
 		// System.out.println("Events " + millisAgo + "ms ago: " + lastEvents.size());
 
@@ -762,7 +762,7 @@ public class InputCursor {
 
 		// System.out.println("X total: " + totalX);
 		// System.out.println("Y total: " + totalY);
-		return new Vector3D(totalX, totalY);
+		return new Point2D.Float(totalX, totalY);
 	}
 
 //    public double getAngleFromStartPoint() {

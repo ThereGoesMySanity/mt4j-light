@@ -44,7 +44,7 @@
 //import org.mt4j.util.camera.Icamera;
 //import org.mt4j.util.math.Tools3D;
 //import org.mt4j.util.math.ToolsGeometry;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //import org.mt4j.util.math.Vertex;
 //
 //import processing.core.PApplet;
@@ -74,10 +74,10 @@
 //	private Icamera camera;
 //	
 //	/** The plane normal. */
-//	private Vector3D planeNormal;
+//	private Point2D.Float planeNormal;
 //	
 //	/** The point in plane. */
-//	private Vector3D pointInPlane;
+//	private Point2D.Float pointInPlane;
 //	
 //	private int verticesLimit;
 //	
@@ -97,8 +97,8 @@
 //		this.camera = camera;
 //		this.dragSelectables = new ArrayList<ILassoable>();
 //		cursorToContext = new Hashtable<InputCursor, ClusteringContext>();
-//		planeNormal = new Vector3D(0,0,1);
-//		pointInPlane = new Vector3D(0,0,0);
+//		planeNormal = new Point2D.Float(0,0,1);
+//		pointInPlane = new Point2D.Float(0,0,0);
 //		this.setLockPriority(1);
 //		
 //		if (PlatformUtil.isAndroid()){
@@ -269,10 +269,10 @@
 //		private MTStencilPolygon polygon;
 //		
 //		/** The last position. */
-//		private Vector3D lastPosition;
+//		private Point2D.Float lastPosition;
 //		
 //		/** The new position. */
-//		private Vector3D newPosition;
+//		private Point2D.Float newPosition;
 //		
 //		/** The cursor. */
 //		private InputCursor cursor;
@@ -293,7 +293,7 @@
 //			gestureAborted = false;
 //			this.cursor = cursor;
 //			
-//			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
+//			Point2D.Float newPos = ToolsGeometry.getRayPlaneIntersection(
 //					Tools3D.getCameraPickRay(pa, camera, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY()), 
 //					planeNormal, 
 //					pointInPlane);
@@ -355,7 +355,7 @@
 //		public ILassoable[] getselectedComps() {
 //			selectedComps.clear();
 //            for (ILassoable currentCard : dragSelectables) {
-//                Vector3D globCenter = new Vector3D(currentCard.getCenterPointGlobal());
+//                Point2D.Float globCenter = new Point2D.Float(currentCard.getCenterPointGlobal());
 //                globCenter.setZ(0);
 ////				if (this.getPolygon().containsPointGlobal(currentCard.getCenterPointGlobal())){
 //                if (this.getPolygon().containsPointGlobal(globCenter)) {
@@ -382,8 +382,8 @@
 ////				pa.popMatrix();
 //
 ////				this.newPosition = Tools3D.unprojectScreenCoords(pa, camera, cursor.getCurrentEvent().getX(), cursor.getCurrentEvent().getY());
-////				Vector3D rayStartPoint = camera.getPosition(); //default cam
-////				Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);
+////				Point2D.Float rayStartPoint = camera.getPosition(); //default cam
+////				Point2D.Float newPos = ToolsGeometry.getRayPlaneIntersection(new Ray(rayStartPoint, newPosition), planeNormal, pointInPlane);
 ////				newPosition = newPos;
 //				
 //				newPosition = ToolsGeometry.getRayPlaneIntersection(
@@ -412,7 +412,7 @@
 //			}
 //		}
 //	
-//		private void addNewPoint(Vector3D newPosition){
+//		private void addNewPoint(Point2D.Float newPosition){
 //			Vertex[] newArr = new Vertex[this.getPolygon().getVertexCount()+1];
 //
 //			Vertex[] polyVertices = this.getPolygon().getVerticesGlobal();
@@ -434,7 +434,7 @@
 //		 * 
 //		 * @return the last position
 //		 */
-//		public Vector3D getLastPosition() {
+//		public Point2D.Float getLastPosition() {
 //			return lastPosition;
 //		}
 //		
@@ -452,7 +452,7 @@
 //		 * 
 //		 * @return the new position
 //		 */
-//		public Vector3D getNewPosition() {
+//		public Point2D.Float getNewPosition() {
 //			return newPosition;
 //		}
 //		

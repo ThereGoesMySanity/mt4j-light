@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor;
 
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 
 /**
@@ -31,7 +31,7 @@ public interface ILassoable /*extends UI element*/ {
 	 * 
 	 * @return the center point global
 	 */
-	public Vector3D getCenterPointGlobal();
+	public Point2D.Float getCenterPointGlobal();
 	
 	/**
 	 * Sets the selected.

@@ -22,7 +22,7 @@
 //import org.mt4j.components.visibleComponents.shapes.AbstractShape;
 //import org.mt4j.input.inputProcessors.IGestureEventListener;
 //import org.mt4j.util.math.Matrix;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //
 //
 ///**
@@ -32,10 +32,10 @@
 //public class DefaultSvgButtonClickAction extends DefaultButtonClickAction implements IGestureEventListener {
 //
 //	/** The width obj space. */
-//	private Vector3D widthObjSpace;
+//	private Point2D.Float widthObjSpace;
 //	
 //	/** The center obj space. */
-//	private Vector3D centerObjSpace;
+//	private Point2D.Float centerObjSpace;
 //	
 //	/** The svg comp. */
 //	private MTComponent svgComp;
@@ -59,7 +59,7 @@
 //	 * 
 //	 * @return the width obj space vector
 //	 */
-//	private Vector3D getWidthVectorLocal(){
+//	private Point2D.Float getWidthVectorLocal(){
 //		if (this.getReferenceComp().hasBounds()){
 //			return this.getReferenceComp().getBounds().getWidthXYVectLocal();
 //		}else{
@@ -114,7 +114,7 @@
 //	
 //	@Override
 //	public float getCurrentUnscaledWidth(){
-//		Vector3D v = getWidthVectorLocal();
+//		Point2D.Float v = getWidthVectorLocal();
 //		
 //		Matrix refCompLocalToWorld = new Matrix(this.getReferenceComp().getGlobalMatrix());
 //		//Remove translation for direction vectors(width/height)
@@ -141,14 +141,14 @@
 //		Matrix refCompLocalToWorld = new Matrix(this.getReferenceComp().getGlobalMatrix());
 //		
 //		//Center into world space
-//		Vector3D refCompCenter = this.centerObjSpace.getCopy();
+//		Point2D.Float refCompCenter = this.centerObjSpace.getCopy();
 //		refCompCenter.transform(refCompLocalToWorld);
 //		
 //		//Remove translation for direction vectors(width/height)
 //		refCompLocalToWorld.removeTranslationFromMatrix();
 //		
 //		//Width vect into world space
-//		Vector3D objSpaceWidth = this.widthObjSpace.getCopy();
+//		Point2D.Float objSpaceWidth = this.widthObjSpace.getCopy();
 //		objSpaceWidth.transform(refCompLocalToWorld);
 ////		System.out.println(" world Width vect of reference component: " + objSpaceWidth);
 //		

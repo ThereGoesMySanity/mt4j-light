@@ -6,7 +6,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.flickProcessor.FlickEvent.FlickDirection;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 
 /**
@@ -21,7 +21,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	private int flickTime;
 	
 	/** The start pos. */
-	private Vector3D startPos;
+	private Point2D.Float startPos;
 	
 	/** The start time. */
 	private long startTime;
@@ -30,31 +30,31 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	boolean flickVelocity;
 	
 	/** The west. */
-	private Vector3D west = new Vector3D(-1,0,0);
+	private Point2D.Float west = new Point2D.Float(-1,0);
 	
 	/** The north_west. */
-	private Vector3D north_west = new Vector3D(-1,-1,0);
+	private Point2D.Float north_west = new Point2D.Float(-1,-1);
 	
 	/** The north. */
-	private Vector3D north = new Vector3D(0,-1,0);
+	private Point2D.Float north = new Point2D.Float(0,-1);
 	
 	/** The north_east. */
-	private Vector3D north_east = new Vector3D(1,-1,0);
+	private Point2D.Float north_east = new Point2D.Float(1,-1);
 	
 	/** The east. */
-	private Vector3D east = new Vector3D(1,0,0);
+	private Point2D.Float east = new Point2D.Float(1,0);
 	
 	/** The south_east. */
-	private Vector3D south_east = new Vector3D(1,1,0);
+	private Point2D.Float south_east = new Point2D.Float(1,1);
 	
 	/** The south. */
-	private Vector3D south = new Vector3D(0,1,0);
+	private Point2D.Float south = new Point2D.Float(0,1);
 	
 	/** The south_west. */
-	private Vector3D south_west = new Vector3D(-1,1,0);
+	private Point2D.Float south_west = new Point2D.Float(-1,1);
 	
 	/** The directions. */
-	private Vector3D[] directions = {west,north_west,north,north_east,east,south_east,south,south_west};
+	private Point2D.Float[] directions = {west,north_west,north,north_east,east,south_east,south,south_west};
 
 	/**
 	 * Instantiates a new flick processor with default flicktime (300) and default velocity threshold (5).
@@ -101,15 +101,15 @@ public class FlickProcessor extends AbstractCursorProcessor {
 			/*
 			long nowTime = currentEvent.getTimeStamp();
 			long elapsedTime = nowTime - this.startTime;
-			Vector3D nowPos = cursor.getPosition();
+			Point2D.Float nowPos = cursor.getPosition();
 			
 			float distanceTraveled = startPos.distance2D(nowPos);
 			float nowVelocity = distanceTraveled / elapsedTime; //TODO prevent 0 divison
 			System.out.println("Velocity:  " + nowVelocity + " (distance: " + distanceTraveled + ", millis: " + elapsedTime + ")");
 			*/
 			
-//			Vector3D vel = cursor.getVelocityVector((int)elapsedTime);
-			Vector3D vel = cursor.getVelocityVector(50);
+//			Point2D.Float vel = cursor.getVelocityVector((int)elapsedTime);
+			Point2D.Float vel = cursor.getVelocityVector(50);
 			if (Math.abs(vel.x) > velThreshHold || Math.abs(vel.y) > velThreshHold){
 				flickVelocity = true;
 			}
@@ -178,35 +178,35 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	 * @return the flick direction
 	 */
 	public FlickDirection getFlickDirection(InputCursor cursor){
-		Vector3D vel = cursor.getVelocityVector(150);
+		Point2D.Float vel = cursor.getVelocityVector(150);
 		float angle = 370;
 		FlickDirection flickDirection = FlickDirection.UNDETERMINED;
-		for (Vector3D  direction : directions) {
-			float newAngle = vel.angleBetween(direction);
+		for (Point2D.Float  direction : directions) {
+			float newAngle =  (float) Math.abs(Math.atan2(vel.y, vel.x) - Math.atan2(direction.y, direction.x));
 			if (newAngle < angle){
 				angle = newAngle;
-				if (direction.equalsVector(west)) {
+				if (direction.equals(west)) {
 					flickDirection = FlickDirection.WEST;
 				} 
-				else if (direction.equalsVector(north_west)) {
+				else if (direction.equals(north_west)) {
 					flickDirection = FlickDirection.NORTH_WEST;
 				}
-				else if (direction.equalsVector(north)) {
+				else if (direction.equals(north)) {
 					flickDirection = FlickDirection.NORTH;
 				}
-				else if (direction.equalsVector(north_east)) {
+				else if (direction.equals(north_east)) {
 					flickDirection = FlickDirection.NORTH_EAST;
 				}
-				else if (direction.equalsVector(east)) {
+				else if (direction.equals(east)) {
 					flickDirection = FlickDirection.EAST;
 				}
-				else if (direction.equalsVector(south_east)) {
+				else if (direction.equals(south_east)) {
 					flickDirection = FlickDirection.SOUTH_EAST;
 				}
-				else if (direction.equalsVector(south)) {
+				else if (direction.equals(south)) {
 					flickDirection = FlickDirection.SOUTH;
 				}
-				else if (direction.equalsVector(south_west)) {
+				else if (direction.equals(south_west)) {
 					flickDirection = FlickDirection.SOUTH_WEST;
 				}
 			}

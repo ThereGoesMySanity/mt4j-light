@@ -23,7 +23,8 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 
 /**
  * The Class DragProcessor. For multi touch drag behaviour on components.
@@ -163,13 +164,13 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	private class DragContext {
 				/** The start position. */
-				private Vector3D startPosition;
+				private Point2D.Float startPosition;
 				
 				/** The last position. */
-				private Vector3D lastPosition;
+				private Point2D.Float lastPosition;
 				
 				/** The new position. */
-				private Vector3D newPosition;
+				private Point2D.Float newPosition;
 				
 				/** The m. */
 				private InputCursor m; 
@@ -189,36 +190,36 @@ public class DragProcessor extends AbstractCursorProcessor {
 					gestureAborted = false;
 					
 					//Set the Drag Startposition
-					Vector3D interSectP = c.getPosition();
+					Point2D.Float interSectP = c.getPosition();
 					
 					if (interSectP != null)
 						this.startPosition = interSectP;
 					else{
 						logger.warn(getName() + " Drag StartPoint Null -> aborting drag");
 						gestureAborted = true; 
-						this.startPosition = new Vector3D(0,0,0); 
+						this.startPosition = new Point2D.Float(0,0); 
 					}
 					
-					this.newPosition = startPosition.getCopy();
+					this.newPosition = (Point2D.Float) startPosition.clone();
 					this.updateDragPosition();
 					
 					//Set the Drags lastPostition (the last one before the new one)
-					this.lastPosition	= startPosition.getCopy();
+					this.lastPosition	= (Point2D.Float) startPosition.clone();
 				}
 				
 				public void updateDragPosition(){
-					Vector3D newPos = m.getPosition();
+					Point2D.Float newPos = m.getPosition();
 					if (newPos != null){
 						lastPosition = newPosition;
 						newPosition = newPos;
 					}
 				}
 
-				public Vector3D getLastPosition() {
+				public Point2D.Float getLastPosition() {
 					return lastPosition;
 				}
 
-				public Vector3D getNewPosition() {
+				public Point2D.Float getNewPosition() {
 					return newPosition;
 				}
 

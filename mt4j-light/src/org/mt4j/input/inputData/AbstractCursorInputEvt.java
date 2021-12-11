@@ -19,8 +19,7 @@ package org.mt4j.input.inputData;
 
 import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputSources.AbstractInputSource;
-import org.mt4j.util.math.Vector3D;
-
+import java.awt.geom.Point2D;
 
 /**
  * This event class is used for
@@ -129,8 +128,8 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	 *
 	 * @return the position
 	 */
-	public Vector3D getPosition(){
-		return new Vector3D(positionX, positionY, 0);
+	public Point2D.Float getPosition(){
+		return new Point2D.Float(positionX, positionY);
 	}
 	
 	

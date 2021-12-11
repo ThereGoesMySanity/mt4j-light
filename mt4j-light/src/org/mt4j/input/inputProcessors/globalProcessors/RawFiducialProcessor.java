@@ -40,18 +40,18 @@ public class RawFiducialProcessor extends AbstractGlobalInputProcessor {
 			/*
 			switch (fEvt.getId()) {
 			case MTFiducialInputEvt.INPUT_DETECTED:{
-				this.fireInputEvent(new RawFiducialEvt(this, MTGestureEvent.GESTURE_DETECTED, null, motion, new Vector3D(fEvt.getPosX(), fEvt.getPosY(), 0), new Vector3D(fEvt.getPosX(), fEvt.getPosY(),0), fEvt.getFiducialId(), fEvt.getAngle(), fEvt.getX_speed(), fEvt.getY_speed(), fEvt.getR_speed(), fEvt.getM_accel(), fEvt.getR_accel()));
+				this.fireInputEvent(new RawFiducialEvt(this, MTGestureEvent.GESTURE_DETECTED, null, motion, new Point2D.Float(fEvt.getPosX(), fEvt.getPosY(), 0), new Point2D.Float(fEvt.getPosX(), fEvt.getPosY(),0), fEvt.getFiducialId(), fEvt.getAngle(), fEvt.getX_speed(), fEvt.getY_speed(), fEvt.getR_speed(), fEvt.getM_accel(), fEvt.getR_accel()));
 				break;
 			}
 			case MTFiducialInputEvt.INPUT_UPDATED:{
 				AbstractCursorInputEvt previousEvent = motion.getPreviousEventOf(fEvt);
 //				logger.debug("Prev " + previousEvent.getPositionX() +"," + previousEvent.getPositionY());
 //				logger.debug("now " + te.getPositionX() +"," + te.getPositionY());
-				this.fireInputEvent(new RawFiducialEvt(this, MTGestureEvent.GESTURE_UPDATED, null, motion, new Vector3D(previousEvent.getPosX(), previousEvent.getPosY(), 0) , new Vector3D(fEvt.getPosX(), fEvt.getPosY(), 0), fEvt.getFiducialId(),  fEvt.getAngle(), fEvt.getX_speed(), fEvt.getY_speed(), fEvt.getR_speed(), fEvt.getM_accel(), fEvt.getR_accel()));
+				this.fireInputEvent(new RawFiducialEvt(this, MTGestureEvent.GESTURE_UPDATED, null, motion, new Point2D.Float(previousEvent.getPosX(), previousEvent.getPosY(), 0) , new Point2D.Float(fEvt.getPosX(), fEvt.getPosY(), 0), fEvt.getFiducialId(),  fEvt.getAngle(), fEvt.getX_speed(), fEvt.getY_speed(), fEvt.getR_speed(), fEvt.getM_accel(), fEvt.getR_accel()));
 				break;
 			}
 			case MTFiducialInputEvt.INPUT_ENDED:{
-				this.fireInputEvent(new RawFiducialEvt(this, MTGestureEvent.GESTURE_ENDED, null, motion, new Vector3D(fEvt.getPosX(), fEvt.getPosY(), 0), new Vector3D(fEvt.getPosX(), fEvt.getPosY(), 0), fEvt.getFiducialId(), fEvt.getAngle(), fEvt.getX_speed(), fEvt.getY_speed(), fEvt.getR_speed(), fEvt.getM_accel(), fEvt.getR_accel()));
+				this.fireInputEvent(new RawFiducialEvt(this, MTGestureEvent.GESTURE_ENDED, null, motion, new Point2D.Float(fEvt.getPosX(), fEvt.getPosY(), 0), new Point2D.Float(fEvt.getPosX(), fEvt.getPosY(), 0), fEvt.getFiducialId(), fEvt.getAngle(), fEvt.getX_speed(), fEvt.getY_speed(), fEvt.getR_speed(), fEvt.getM_accel(), fEvt.getR_accel()));
 				break;
 			}
 			default:

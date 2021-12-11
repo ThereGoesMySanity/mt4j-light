@@ -26,7 +26,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 /**
  * The Class ZoomProcessor.
@@ -79,7 +79,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 				
 				//See if we can obtain a lock on both cursors
 				if (this.canLock(otherCursor, c)){
-					float newDistance = Vector3D.distance(otherCursor.getPosition(), c.getPosition());
+					float newDistance = (float) otherCursor.getPosition().distance(c.getPosition());
 					if (newDistance < zoomDetectRadius) {
 						this.oldDistance = newDistance;
 						this.getLock(otherCursor, c);
@@ -101,7 +101,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 		if (locked.contains(c)){ //in progress with this cursors
 			InputCursor firstCursor = locked.get(0);
 			InputCursor secondCursor = locked.get(1);
-			float fingerDistance = Vector3D.distance(firstCursor.getPosition(), secondCursor.getPosition());
+			float fingerDistance = (float) firstCursor.getPosition().distance(secondCursor.getPosition());
 			float camZoomAmount = fingerDistance - oldDistance;
 			oldDistance = fingerDistance;
 			if (c.equals(firstCursor)){
@@ -120,7 +120,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 			InputCursor leftOverCursor = (locked.get(0).equals(c))? locked.get(1) : locked.get(0);
 			InputCursor futureCursor = getFarthestFreeCursorToLimited(leftOverCursor, zoomDetectRadius);
 			if (futureCursor != null){
-				float newDistance = Vector3D.distance(leftOverCursor.getPosition(),	futureCursor.getPosition());
+				float newDistance = (float) leftOverCursor.getPosition().distance(futureCursor.getPosition());
 				if (newDistance < zoomDetectRadius) {//Check if other cursor is in distance 
 					this.oldDistance = newDistance;
 					this.getLock(futureCursor);
@@ -185,7 +185,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 
 			//See if we can obtain a lock on both cursors
 			if (this.canLock(firstCursor, secondCursor)){
-				float newDistance = Vector3D.distance(firstCursor.getPosition(), secondCursor.getPosition());
+				float newDistance = (float) firstCursor.getPosition().distance(secondCursor.getPosition());
 				if (newDistance < zoomDetectRadius) {//Check if other cursor is in distance 
 					this.oldDistance = newDistance;
 					this.getLock(firstCursor, secondCursor);

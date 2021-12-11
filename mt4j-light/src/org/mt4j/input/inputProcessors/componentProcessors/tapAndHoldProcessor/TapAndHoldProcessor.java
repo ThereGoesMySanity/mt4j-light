@@ -28,7 +28,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 /**
  * The Class TapAndHoldProcessor. Multi-Touch gesture which is triggered
@@ -45,7 +45,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 	private float maxFingerUpDist;
 	
 	/** The button down screen pos. */
-	private Vector3D buttonDownScreenPos;
+	private Point2D.Float buttonDownScreenPos;
 
 	/** The tap start time. */
 	private long tapStartTime;
@@ -135,14 +135,14 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 			
 			long nowTime = System.currentTimeMillis();
 			long elapsedTime = nowTime - this.tapStartTime;
-			Vector3D screenPos = c.getPosition();
+			Point2D.Float screenPos = c.getPosition();
 			float normalized = (float)elapsedTime / (float)this.holdTime;
 			
 			if (elapsedTime >= holdTime){
 				normalized = 1;
 				logger.debug("TIME PASSED!");
-				//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
-				if (Vector3D.distance2D(buttonDownScreenPos, screenPos) <= this.maxFingerUpDist) {
+				//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Point2D.Float.distance(buttonDownScreenPos, buttonUpScreenPos));
+				if (buttonDownScreenPos.distance(screenPos) <= this.maxFingerUpDist) {
 					this.fireGestureEvent(new TapAndHoldEvent(this, MTGestureEvent.GESTURE_ENDED, currentTarget, c, true, screenPos, this.holdTime, elapsedTime, normalized));
 				}else{
 					logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
@@ -169,11 +169,11 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 		if (locked.contains(c)){
 			long nowTime = System.currentTimeMillis();
 			long elapsedTime = nowTime - this.tapStartTime;
-			Vector3D screenPos = c.getPosition();
+			Point2D.Float screenPos = c.getPosition();
 			float normalized = (float)elapsedTime / (float)this.holdTime;
 
-			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
-			if (Vector3D.distance2D(buttonDownScreenPos, screenPos) > this.maxFingerUpDist){
+			//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Point2D.Float.distance(buttonDownScreenPos, buttonUpScreenPos));
+			if (buttonDownScreenPos.distance(screenPos) > this.maxFingerUpDist){
 				logger.debug("DISTANCE TOO FAR OR NO INTERSECTION");
 				this.unLock(c);
 				try {
@@ -204,7 +204,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 				InputCursor otherCursor = free.get(0); 
 				if (this.canLock(otherCursor) 
 						&& 
-					Vector3D.distance2D(buttonDownScreenPos, otherCursor.getPosition()) <= this.maxFingerUpDist)
+					buttonDownScreenPos.distance(otherCursor.getPosition()) <= this.maxFingerUpDist)
 				{ 	//Check if we have the priority to use this other cursor and if cursor is in range
 					this.getLock(otherCursor);
 					buttonDownScreenPos = otherCursor.getPosition();

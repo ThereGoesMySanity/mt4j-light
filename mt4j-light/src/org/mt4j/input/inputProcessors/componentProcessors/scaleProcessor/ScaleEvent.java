@@ -21,7 +21,7 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 
 /**
@@ -46,7 +46,7 @@ public class ScaleEvent extends MTGestureEvent{
 	private InputCursor secondCursor;
 	
 	/** The scaling point. */
-	private Vector3D scalingPoint;
+	private Point2D.Float scalingPoint;
 	
 	
 	/**
@@ -62,7 +62,7 @@ public class ScaleEvent extends MTGestureEvent{
 	 * @param scaleFactorZ the scale factor z
 	 * @param scalingPoint the scaling point
 	 */
-	public ScaleEvent(IInputProcessor source, int id, AbstractMTLayer<?> scalingObject, InputCursor firstCursor, InputCursor secondCursor, float scaleFactorX, float scaleFactorY, float scaleFactorZ, Vector3D scalingPoint) {
+	public ScaleEvent(IInputProcessor source, int id, AbstractMTLayer<?> scalingObject, InputCursor firstCursor, InputCursor secondCursor, float scaleFactorX, float scaleFactorY, float scaleFactorZ, Point2D.Float scalingPoint) {
 		super(source, id, scalingObject);
 		this.firstCursor = firstCursor;
 		this.secondCursor = secondCursor;
@@ -104,7 +104,7 @@ public class ScaleEvent extends MTGestureEvent{
 	 * 
 	 * @return the scaling point
 	 */
-	public Vector3D getScalingPoint() {
+	public Point2D.Float getScalingPoint() {
 		return scalingPoint;
 	}
 
@@ -176,7 +176,7 @@ public class ScaleEvent extends MTGestureEvent{
 	 * 
 	 * @param scalingPoint the new scaling point
 	 */
-	public void setScalingPoint(Vector3D scalingPoint) {
+	public void setScalingPoint(Point2D.Float scalingPoint) {
 		this.scalingPoint = scalingPoint;
 	}
 

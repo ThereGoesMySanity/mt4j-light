@@ -25,7 +25,8 @@ import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 
 /**
  * The Class MultipleDragProcessor. Fires drag events for every cursor on the component instead
@@ -113,13 +114,13 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 	private class DragContext {
 		
 		/** The start position. */
-		protected Vector3D startPosition;
+		protected Point2D.Float startPosition;
 		
 		/** The last position. */
-		protected Vector3D lastPosition;
+		protected Point2D.Float lastPosition;
 		
 		/** The new position. */
-		protected Vector3D newPosition;
+		protected Point2D.Float newPosition;
 
 		/** The m. */
 		private InputCursor m; 
@@ -136,25 +137,25 @@ public class MultipleDragProcessor extends AbstractCursorProcessor {
 			this.m = m;
 			gestureAborted = false;
 			//Set the Drag Startposition
-			Vector3D interSectP = m.getPosition();
+			Point2D.Float interSectP = m.getPosition();
 			
 			if (interSectP != null)
 				this.startPosition = interSectP;
 			else{
 				gestureAborted = true; 
-				this.startPosition = new Vector3D(0,0,0); //TODO ABORT GESTURE!
+				this.startPosition = new Point2D.Float(0,0); //TODO ABORT GESTURE!
 			}
-			this.newPosition = startPosition.getCopy();
+			this.newPosition = (Float) startPosition.clone();
 			this.updateDragPosition();
 			//Set the Drags lastPostition (the last one before the new one)
-			this.lastPosition	= startPosition.getCopy();
+			this.lastPosition	= (Float) startPosition.clone();
 		}
 
 		/**
 		 * Update drag position.
 		 */
 		public void updateDragPosition(){
-			Vector3D newPos = m.getPosition();
+			Point2D.Float newPos = m.getPosition();
 			if (newPos != null){
 				lastPosition = newPosition;
 				newPosition = newPos;

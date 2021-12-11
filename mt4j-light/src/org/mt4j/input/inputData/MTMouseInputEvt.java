@@ -1,8 +1,8 @@
 package org.mt4j.input.inputData;
 
-import org.mt4j.input.inputSources.AbstractInputSource;
+import java.awt.event.MouseEvent;
 
-import processing.core.PConstants;
+import org.mt4j.input.inputSources.AbstractInputSource;
 
 /**
  * The Class MTMouseInputEvt.
@@ -78,15 +78,15 @@ public class MTMouseInputEvt extends MTFingerInputEvt {
     }
 
     public boolean isLeftButton() {
-        return this.mouseButton == PConstants.LEFT;
+        return this.mouseButton == MouseEvent.BUTTON1;
     }
 
     public boolean isRightButton() {
-        return this.mouseButton == PConstants.RIGHT;
+        return this.mouseButton == MouseEvent.BUTTON2;
     }
 
     public boolean isCenterButton() {
-        return this.mouseButton == PConstants.CENTER;
+        return this.mouseButton == MouseEvent.BUTTON3;
     }
 
 }

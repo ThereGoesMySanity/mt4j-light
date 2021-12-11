@@ -1,7 +1,7 @@
 package org.mt4j.input.inputProcessors;
 
 import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 public class GestureUtils {
 	
@@ -13,7 +13,7 @@ public class GestureUtils {
 	 *
 	 * @return the intersection
 	 */
-	public static Vector3D getIntersection(InputCursor c){
+	public static Point2D.Float getIntersection(InputCursor c){
 		return c.getPosition();
 	}
 
@@ -40,7 +40,7 @@ public class GestureUtils {
 	 * @return the distance
 	 */
 	public static float getDistance(InputCursor a, InputCursor b){
-		return a.getPosition().distance2D(b.getPosition());
+		return (float) a.getPosition().distance(b.getPosition());
 	}
 
 }

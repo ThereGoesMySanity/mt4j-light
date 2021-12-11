@@ -21,7 +21,7 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 
 /**
@@ -37,10 +37,10 @@ public class RotateEvent extends MTGestureEvent {
 	private InputCursor secondFingerMotion;
 	
 	/** The rotation point. */
-	private Vector3D rotationPoint;
+	private Point2D.Float rotationPoint;
 	
 	/** The translation vector. */
-	private Vector3D translationVector;
+	private Point2D.Float translationVector;
 	
 	/** The rotation degrees. */
 	private float rotationDegrees;
@@ -58,7 +58,7 @@ public class RotateEvent extends MTGestureEvent {
 	 * @param rotationPoint the rotation point
 	 * @param rotationDegrees the rotation degrees
 	 */
-	public RotateEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFingerMotion, InputCursor secondFingerMotion, Vector3D translationVector, Vector3D rotationPoint, float rotationDegrees) {
+	public RotateEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFingerMotion, InputCursor secondFingerMotion, Point2D.Float translationVector, Point2D.Float rotationPoint, float rotationDegrees) {
 		super(source, id, targetComponent);
 		this.firstFingerMotion = firstFingerMotion;
 		this.secondFingerMotion = secondFingerMotion;
@@ -81,7 +81,7 @@ public class RotateEvent extends MTGestureEvent {
 	 * 
 	 * @return the rotation point
 	 */
-	public Vector3D getRotationPoint() {
+	public Point2D.Float getRotationPoint() {
 		return rotationPoint;
 	}
 
@@ -99,7 +99,7 @@ public class RotateEvent extends MTGestureEvent {
 	 * 
 	 * @return the translation vector
 	 */
-	public Vector3D getTranslationVector() {
+	public Point2D.Float getTranslationVector() {
 		return translationVector;
 	}
 
@@ -135,7 +135,7 @@ public class RotateEvent extends MTGestureEvent {
 	 * 
 	 * @param rotationPoint the new rotation point
 	 */
-	public void setRotationPoint(Vector3D rotationPoint) {
+	public void setRotationPoint(Point2D.Float rotationPoint) {
 		this.rotationPoint = rotationPoint;
 	}
 
@@ -153,7 +153,7 @@ public class RotateEvent extends MTGestureEvent {
 	 * 
 	 * @param translationVector the new translation vector
 	 */
-	public void setTranslationVector(Vector3D translationVector) {
+	public void setTranslationVector(Point2D.Float translationVector) {
 		this.translationVector = translationVector;
 	}
 	

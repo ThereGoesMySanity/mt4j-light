@@ -6,7 +6,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;

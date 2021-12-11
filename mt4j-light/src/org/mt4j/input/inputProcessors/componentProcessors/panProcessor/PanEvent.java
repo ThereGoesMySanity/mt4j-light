@@ -21,7 +21,7 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 
 /**
@@ -34,7 +34,7 @@ public class PanEvent extends MTGestureEvent {
 	private InputCursor firstMotion;
 	
 	/** The translation vector. */
-	private Vector3D translationVector;
+	private Point2D.Float translationVector;
 
 	/**
 	 * Instantiates a new pan event.
@@ -46,7 +46,7 @@ public class PanEvent extends MTGestureEvent {
 	 * @param translationVector the translation vector
 	 * @param camera the camera
 	 */
-	public PanEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFinger, Vector3D translationVector) {
+	public PanEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFinger, Point2D.Float translationVector) {
 		super(source, id, targetComponent);
 		this.firstMotion = firstFinger;
 		this.translationVector = translationVector;
@@ -66,7 +66,7 @@ public class PanEvent extends MTGestureEvent {
 	 * 
 	 * @return the translation vector
 	 */
-	public Vector3D getTranslationVector() {
+	public Point2D.Float getTranslationVector() {
 		return translationVector;
 	}
 }

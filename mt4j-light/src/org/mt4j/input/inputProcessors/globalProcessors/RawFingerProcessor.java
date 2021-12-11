@@ -44,18 +44,18 @@ public class RawFingerProcessor extends AbstractGlobalInputProcessor {
 			
 			switch (te.getId()) {
 			case MTFingerInputEvt.INPUT_DETECTED:
-				fireInputEvent(new RawFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, null, motion, new Vector3D(te.getPosX(),te.getPosY(), 0), new Vector3D(te.getPosX(),te.getPosY(), 0)));
+				fireInputEvent(new RawFingerEvent(this, MTGestureEvent.GESTURE_DETECTED, null, motion, new Point2D.Float(te.getPosX(),te.getPosY(), 0), new Point2D.Float(te.getPosX(),te.getPosY(), 0)));
 				break;
 			case MTFingerInputEvt.INPUT_UPDATED:
 				AbstractCursorInputEvt previousEvent = motion.getPreviousEventOf(te);
 				if (previousEvent != null){
 //					logger.debug("Prev " + previousEvent.getPositionX() +"," + previousEvent.getPositionY());
 //					logger.debug("now " + te.getPositionX() +"," + te.getPositionY());
-					fireInputEvent(new RawFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, null, motion, new Vector3D(previousEvent.getPosX(), previousEvent.getPosY(), 0) , new Vector3D(te.getPosX(),te.getPosY(), 0)));
+					fireInputEvent(new RawFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, null, motion, new Point2D.Float(previousEvent.getPosX(), previousEvent.getPosY(), 0) , new Point2D.Float(te.getPosX(),te.getPosY(), 0)));
 				}
 				break;
 			case MTFingerInputEvt.INPUT_ENDED:
-				fireInputEvent(new RawFingerEvent(this, MTGestureEvent.GESTURE_ENDED, null, motion, new Vector3D(te.getPosX(),te.getPosY(), 0), new Vector3D(te.getPosX(),te.getPosY(), 0)));
+				fireInputEvent(new RawFingerEvent(this, MTGestureEvent.GESTURE_ENDED, null, motion, new Point2D.Float(te.getPosX(),te.getPosY(), 0), new Point2D.Float(te.getPosX(),te.getPosY(), 0)));
 				break;
 			default:
 				break;

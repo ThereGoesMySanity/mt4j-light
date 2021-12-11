@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,7 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.ArrayDeque;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 import processing.core.PApplet;
 
@@ -298,7 +298,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		float currDist = Float.MIN_VALUE;
 		InputCursor farthestCursor = null;
 		
-		Vector3D cursorPos = cursor.getPosition();
+		Point2D.Float cursorPos = cursor.getPosition();
 		for (InputCursor currentCursor : this.getCurrentComponentCursors()) {
 			if (currentCursor.equals(cursor) || !currentCursor.canLock(this) || currentCursor.isLockedBy(this))
 				continue;
@@ -313,7 +313,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			if (continueLoop)
 				continue;
 			
-			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
+			float distanceToCurrentCursor = (float) currentCursor.getPosition().distance(cursorPos);
 			if (distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f){
 				currDist = distanceToCurrentCursor;
 				farthestCursor = currentCursor;
@@ -334,7 +334,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		float currDist = Float.MAX_VALUE;
 		InputCursor closestCursor = null;
 		
-		Vector3D cursorPos = cursor.getPosition();
+		Point2D.Float cursorPos = cursor.getPosition();
 		for (InputCursor currentCursor : this.getCurrentComponentCursors()) {
 			if (currentCursor.equals(cursor) || !currentCursor.canLock(this) || currentCursor.isLockedBy(this))
 				continue;
@@ -349,7 +349,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			if (continueLoop)
 				continue;
 			
-			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
+			float distanceToCurrentCursor = (float) currentCursor.getPosition().distance(cursorPos);
 			if (distanceToCurrentCursor <= currDist || distanceToCurrentCursor == 0.0f){
 				currDist = distanceToCurrentCursor;
 				closestCursor = currentCursor;
@@ -372,7 +372,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 		float currDist = Float.MIN_VALUE;
 		InputCursor farthestCursor = null;
 		
-		Vector3D cursorPos = cursor.getPosition();
+		Point2D.Float cursorPos = cursor.getPosition();
 		for (InputCursor currentCursor : this.getCurrentComponentCursors()) {
 			if (currentCursor.equals(cursor) || !currentCursor.canLock(this) || currentCursor.isLockedBy(this))
 				continue;
@@ -386,7 +386,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			if (continueLoop)
 				continue;
 			
-			float distanceToCurrentCursor = currentCursor.getPosition().distance2D(cursorPos);
+			float distanceToCurrentCursor = (float) currentCursor.getPosition().distance(cursorPos);
 			if ((distanceToCurrentCursor >= currDist || distanceToCurrentCursor == 0.0f) && distanceToCurrentCursor <= maxRadius){
 				currDist = distanceToCurrentCursor;
 				farthestCursor = currentCursor;
@@ -429,7 +429,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @param c the c
 	 * @return the intersection
 	 */
-	public Vector3D getIntersection(PApplet app, InputCursor c){
+	public Point2D.Float getIntersection(PApplet app, InputCursor c){
 		return c.getPosition();
 	}
 	///////////////////////////////////////////////////////

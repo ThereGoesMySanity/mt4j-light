@@ -7,7 +7,7 @@
 //import org.mt4j.input.inputProcessors.IGestureEventListener;
 //import org.mt4j.input.inputProcessors.MTGestureEvent;
 //import org.mt4j.input.inputProcessors.componentProcessors.dragProcessor.DragEvent;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //
 ///**
 // * The Class InertiaDragAction.
@@ -64,7 +64,7 @@
 //			case DragEvent.GESTURE_CANCELED:
 //				break;
 //			case DragEvent.GESTURE_ENDED:
-//				Vector3D vel = de.getDragCursor().getVelocityVector(integrationTime);
+//				Point2D.Float vel = de.getDragCursor().getVelocityVector(integrationTime);
 //				vel.scaleLocal(0.9f); //Test - integrate over longer time but scale down velocity vec
 //				vel = vel.getLimited(limit);
 //				oldController = comp.getController();
@@ -88,7 +88,7 @@
 //		private MTComponent target;
 //		
 //		/** The start velocity vec. */
-//		private Vector3D startVelocityVec;
+//		private Point2D.Float startVelocityVec;
 ////		private float dampingValue = 0.90f;
 ////		private float dampingValue = 0.80f;
 ////		private float dampingValue = 0.45f;
@@ -107,10 +107,10 @@
 //		private float movePerMilli;
 //		
 //		/** The move vect norm. */
-//		private Vector3D moveVectNorm;
+//		private Point2D.Float moveVectNorm;
 //		
 //		/** The move vect. */
-//		private Vector3D moveVect;
+//		private Point2D.Float moveVect;
 //		
 //		/**
 //		 * Instantiates a new inertia controller.
@@ -119,7 +119,7 @@
 //		 * @param startVelocityVec the start velocity vec
 //		 * @param oldController the old controller
 //		 */
-//		public InertiaController(MTComponent target, Vector3D startVelocityVec, IMTController oldController) {
+//		public InertiaController(MTComponent target, Point2D.Float startVelocityVec, IMTController oldController) {
 //			super();
 //			this.target = target;
 //			this.startVelocityVec = startVelocityVec;
@@ -130,7 +130,7 @@
 //			currentAnimationTime = 0;
 //			movePerMilli = startVelocityVec.length()/animationTime;
 //			moveVectNorm = startVelocityVec.getNormalized();
-//			moveVect = new Vector3D();
+//			moveVect = new Point2D.Float();
 //			*/
 //			
 //		}
@@ -157,13 +157,13 @@
 //			
 ////			/*
 //			if (Math.abs(startVelocityVec.x) < 0.05f && Math.abs(startVelocityVec.y) < 0.05f){
-//				startVelocityVec.setValues(Vector3D.ZERO_VECTOR);
+//				startVelocityVec.setValues(Point2D.Float.ZERO_VECTOR);
 //				target.setController(oldController);
 //				return;
 //			}
 //			startVelocityVec.scaleLocal(damping);
 //			
-//			Vector3D vec = new Vector3D(startVelocityVec);
+//			Point2D.Float vec = new Point2D.Float(startVelocityVec);
 //			vec.transformDirectionVector(target.getGlobalInverseMatrix()); //Transform direction vector into component local coordinates
 //			target.translate(vec,TransformSpace.LOCAL);
 //			

@@ -26,7 +26,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 /**
  * The Class ScaleProcessor. 2-Finger Scale multi-touch gesture.
@@ -224,10 +224,10 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		private InputCursor secondFingerCursor; 
 		
 		/** The first finger new pos. */
-		private Vector3D firstFingerNewPos;
+		private Point2D.Float firstFingerNewPos;
 		
 		/** The second finger new pos. */
-		private Vector3D secondFingerNewPos;
+		private Point2D.Float secondFingerNewPos;
 		
 		/** The last scale distance. */
 		private float lastScaleDistance;
@@ -248,25 +248,25 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 			this.secondFingerCursor = secondFingerCursor;
 			
 			//irgendwo vorher checken ob der 1. finger �berhaupt noch �ber dem obj ist? ist nur sicher der fall wenn mit 1 finger gedraggt wird..
-			Vector3D interPoint = firstFingerCursor.getPosition();
+			Point2D.Float interPoint = firstFingerCursor.getPosition();
 			if (interPoint !=null)
 				firstFingerNewPos = interPoint;
 			else{
 				logger.warn(getName() + " firstFingerNewPos NEW = NULL");
-				this.firstFingerNewPos	= new Vector3D();
+				this.firstFingerNewPos	= new Point2D.Float();
 				gestureAborted = true;
 			}
 			
-			Vector3D scndInterPoint = secondFingerCursor.getPosition();
+			Point2D.Float scndInterPoint = secondFingerCursor.getPosition();
 			if (scndInterPoint !=null)
 				secondFingerNewPos = scndInterPoint;
 			else{
 				logger.warn(getName() + " secondFingerNewPos NEW = NULL");
-				secondFingerNewPos = new Vector3D();
+				secondFingerNewPos = new Point2D.Float();
 				gestureAborted = true;
 			}
 			
-			this.lastScaleDistance = Vector3D.distance(firstFingerNewPos, secondFingerNewPos);
+			this.lastScaleDistance = (float) firstFingerNewPos.distance(secondFingerNewPos);
 			 //Prevent scaling to 0 if both fingers are on the same position at scalstart
 			if (lastScaleDistance == 0.0)
 				lastScaleDistance = 1.0f;
@@ -309,17 +309,17 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		 */
 		public float getUpdatedScaleFactor(InputCursor m){
 			if (m.equals(firstFingerCursor)){ ///FIRST FINGER MOVED!
-				Vector3D newFirstFingerPos = firstFingerCursor.getPosition();
+				Point2D.Float newFirstFingerPos = firstFingerCursor.getPosition();
 				
 				//Update the field
 				if (newFirstFingerPos != null)
 					this.firstFingerNewPos = newFirstFingerPos;
 			
 			}else if (m.equals(secondFingerCursor)){ ///SECOND FINGER MOVED!
-				Vector3D newSecondFingerPos = secondFingerCursor.getPosition();
+				Point2D.Float newSecondFingerPos = secondFingerCursor.getPosition();
 				
 //				//TODO dragplane aus den beiden fingern ableiten -> wenn obj schr�g im raum, dragplane entsprechend
-//				Vector3D newSecondFingerPos = ToolsIntersection.getRayPlaneIntersection(new Ray(rayStartPoint, newPointInRayDir), scalePlaneNormal, secondFingerStartPos.getCopy());
+//				Point2D.Float newSecondFingerPos = ToolsIntersection.getRayPlaneIntersection(new Ray(rayStartPoint, newPointInRayDir), scalePlaneNormal, secondFingerStartPos.getCopy());
 				
 				//Update the field
 				if (newSecondFingerPos != null)
@@ -328,10 +328,10 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 			
 			//IF THE FINGERS ARE ON THE SAME POSITION RETURN 1 SO THAT NOT SCALING IS DONE
 			//ELSE THE OBJECTS WILL DISAPPEAR, scaled to 0
-			if (firstFingerNewPos.equalsVector(secondFingerNewPos))
+			if (firstFingerNewPos.equals(secondFingerNewPos))
 				return 1.0f;
 			
-			float newScaleDistance = Vector3D.distance(firstFingerNewPos, secondFingerNewPos);
+			float newScaleDistance = (float) firstFingerNewPos.distance(secondFingerNewPos);
 			
 			float newScaleFactor = newScaleDistance/lastScaleDistance;
 			
@@ -348,7 +348,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		 * 
 		 * @return the first finger new pos
 		 */
-		public Vector3D getFirstFingerNewPos() {
+		public Point2D.Float getFirstFingerNewPos() {
 			return firstFingerNewPos;
 		}
 
@@ -357,7 +357,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		 * 
 		 * @return the second finger new pos
 		 */
-		public Vector3D getSecondFingerNewPos() {
+		public Point2D.Float getSecondFingerNewPos() {
 			return secondFingerNewPos;
 		}
 	}

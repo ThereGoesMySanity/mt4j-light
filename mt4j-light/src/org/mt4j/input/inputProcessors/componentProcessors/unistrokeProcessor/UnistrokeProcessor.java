@@ -9,7 +9,7 @@
 //import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Direction;
 //import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.Recognizer;
 //import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeUtils.UnistrokeGesture;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //
 //import processing.core.PApplet;
 //
@@ -21,9 +21,9 @@
 //	/** The pa. */
 //	private PApplet pa;
 //	/** The plane normal. */
-//	private Vector3D planeNormal;
+//	private Point2D.Float planeNormal;
 //	/** The point in plane. */
-//	private Vector3D pointInPlane;
+//	private Point2D.Float pointInPlane;
 //	
 //	
 //	/** The context. */
@@ -44,8 +44,8 @@
 //	public UnistrokeProcessor(PApplet pa) { 
 //		super();
 //		this.pa = pa;
-//		planeNormal = new Vector3D(0, 0, 1);
-//		pointInPlane = new Vector3D(0, 0, 0);
+//		planeNormal = new Point2D.Float(0, 0, 1);
+//		pointInPlane = new Point2D.Float(0, 0, 0);
 //		
 //		this.setLockPriority(1);
 //		

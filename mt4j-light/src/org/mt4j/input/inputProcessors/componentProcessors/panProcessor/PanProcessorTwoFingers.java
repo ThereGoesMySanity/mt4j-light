@@ -26,7 +26,8 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Float;
 
 /**
  * The Class PanProcessorTwoFingers. Multi-touch gesture processor for panning the
@@ -64,11 +65,11 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 				InputCursor otherCursor = (availableCursors.get(0).equals(c))? availableCursors.get(1) : availableCursors.get(0);
 				//See if we can obtain a lock on both cursors
 				if (this.canLock(otherCursor, c)){
-					float newDistance = Vector3D.distance(otherCursor.getPosition(), c.getPosition());
+					float newDistance = (float) otherCursor.getPosition().distance(c.getPosition());
 					if (newDistance < detectRadius) {
 						this.getLock(otherCursor, c);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in zoom distance!");
-						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), otherCursor, c, new Vector3D(0,0,0)));
+						this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), otherCursor, c, new Point2D.Float(0,0)));
 					}else{
 						logger.debug(this.getName() + " cursors not close enough to start gesture. Distance: " + newDistance);
 					}
@@ -85,11 +86,11 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 		if (locked.contains(c)){ //in progress with this cursors
 			InputCursor firstCursor = locked.get(0);
 			InputCursor secondCursor = locked.get(1);
-			Vector3D distance = (c.equals(firstCursor))? getNewTranslation(positionEvent.getTarget(), firstCursor, secondCursor) : getNewTranslation(positionEvent.getTarget(), secondCursor, firstCursor);
+			Point2D.Float distance = (c.equals(firstCursor))? getNewTranslation(positionEvent.getTarget(), firstCursor, secondCursor) : getNewTranslation(positionEvent.getTarget(), secondCursor, firstCursor);
 			if (c.equals(firstCursor)){
-				this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, new Vector3D(distance.getX(),distance.getY(),0)));
+				this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, (Float) distance.clone()));
 			}else{
-				this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, new Vector3D(distance.getX(),distance.getY(),0)));
+				this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, (Float) distance.clone()));
 			}
 		}
 	}
@@ -103,7 +104,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 			InputCursor leftOverCursor = (locked.get(0).equals(c))? locked.get(1) : locked.get(0);
 			InputCursor futureCursor = getFarthestFreeCursorToLimited(leftOverCursor, detectRadius);
 			if (futureCursor != null){
-				float newDistance = Vector3D.distance(leftOverCursor.getPosition(), futureCursor.getPosition());
+				float newDistance = (float) leftOverCursor.getPosition().distance(futureCursor.getPosition());
 				if (newDistance < detectRadius) {//Check if other cursor is in distance 
 					this.getLock(futureCursor);
 					logger.debug(this.getName() + " we could lock another cursor! (ID:" + futureCursor.getId() +")");
@@ -127,7 +128,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 */
 	private void endGesture(InputCursor inputEndedCursor, InputCursor leftOverCursor, AbstractMTLayer<?> comp){
 		this.unLock(leftOverCursor);
-		this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_ENDED, comp, inputEndedCursor, leftOverCursor, new Vector3D(0,0,0)));
+		this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_ENDED, comp, inputEndedCursor, leftOverCursor, new Point2D.Float(0,0)));
 	}
 	
 	
@@ -143,7 +144,7 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.contains(c)){
 			InputCursor leftOverCursor = (locked.get(0).equals(c))? locked.get(1) : locked.get(0);
-			this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), c, leftOverCursor, new Vector3D(0,0,0)));			
+			this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), c, leftOverCursor, new Point2D.Float(0,0)));			
 			this.unLockAllCursors();
 			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture - we therefor have to stop this gesture!");
 		}
@@ -168,12 +169,12 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 
 			//See if we can obtain a lock on both cursors
 			if (this.canLock(firstCursor, secondCursor)){
-				float newDistance = Vector3D.distance(firstCursor.getPosition(), secondCursor.getPosition());
+				float newDistance = (float) firstCursor.getPosition().distance(secondCursor.getPosition());
 				if (newDistance < detectRadius) {//Check if other cursor is in distance 
 					this.getLock(firstCursor, secondCursor);
 					logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 					logger.debug(this.getName() + " continue with different cursors (ID: " + firstCursor.getId() + ")" + " " + "(ID: " + secondCursor.getId() + ")");
-					this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, new Vector3D(0,0,0)));
+					this.fireGestureEvent(new PanTwoFingerEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, new Point2D.Float(0,0)));
 				}else{
 					logger.debug(this.getName() + " distance was too great between cursors: " + firstCursor.getId() +", " + secondCursor.getId() + " distance: " + newDistance);
 				}
@@ -195,17 +196,17 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 * 
 	 * @return the new translation
 	 */
-	private Vector3D getNewTranslation(AbstractMTLayer<?> comp, InputCursor movingCursor, InputCursor otherCursor){
-		Vector3D fromFirstFinger = movingCursor.getPreviousEvent().getPosition();
+	private Point2D.Float getNewTranslation(AbstractMTLayer<?> comp, InputCursor movingCursor, InputCursor otherCursor){
+		Point2D.Float fromFirstFinger = movingCursor.getPreviousEvent().getPosition();
 		
-		Vector3D fromSecondFinger = otherCursor.getCurrentEvent().getPosition();
+		Point2D.Float fromSecondFinger = otherCursor.getCurrentEvent().getPosition();
 		
-		Vector3D oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
+		Point2D.Float oldMiddlePoint = getMiddlePointBetweenFingers(fromSecondFinger, fromFirstFinger);
 		
-		Vector3D toFirstFinger = movingCursor.getCurrentEvent().getPosition();
+		Point2D.Float toFirstFinger = movingCursor.getCurrentEvent().getPosition();
 		
-		Vector3D newMiddlePoint = getMiddlePointBetweenFingers(toFirstFinger ,  fromSecondFinger);
-		Vector3D distance = newMiddlePoint.getSubtracted(oldMiddlePoint);
+		Point2D.Float newMiddlePoint = getMiddlePointBetweenFingers(toFirstFinger ,  fromSecondFinger);
+		Point2D.Float distance = new Point2D.Float(newMiddlePoint.x - oldMiddlePoint.x, newMiddlePoint.y - oldMiddlePoint.y);
 		return distance;
 	}
 	
@@ -218,10 +219,9 @@ public class PanProcessorTwoFingers extends AbstractCursorProcessor {
 	 * 
 	 * @return the middle point between fingers
 	 */
-	private Vector3D getMiddlePointBetweenFingers(Vector3D firstFinger, Vector3D secondFinger){
-		Vector3D bla = secondFinger.getSubtracted(firstFinger); //= direction vector of 1. to 2. finger
-		bla.scaleLocal(0.5f); //take the half
-		return (new Vector3D(firstFinger.getX() + bla.getX(), firstFinger.getY() + bla.getY(), firstFinger.getZ() + bla.getZ()));
+	private Point2D.Float getMiddlePointBetweenFingers(Point2D.Float firstFinger, Point2D.Float secondFinger){
+		Point2D.Float bla = new Point2D.Float((secondFinger.x - firstFinger.x) * 0.5f, (secondFinger.y - firstFinger.y) * 0.5f); //= direction vector of 1. to 2. finger
+		return (new Point2D.Float(firstFinger.x + bla.x, firstFinger.y + bla.y));
 	}
 	
 	

@@ -21,7 +21,7 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 
 /**
@@ -34,13 +34,13 @@ public class DragEvent extends MTGestureEvent {
 	private InputCursor dragCursor;
 	
 	/** The from. */
-	private Vector3D from;
+	private Point2D.Float from;
 	
 	/** The to. */
-	private Vector3D to;
+	private Point2D.Float to;
 	
 	/** The translation vect. */
-	private Vector3D translationVect;
+	private Point2D.Float translationVect;
 	
 	
 	/**
@@ -53,12 +53,12 @@ public class DragEvent extends MTGestureEvent {
 	 * @param from the from
 	 * @param to the to
 	 */
-	public DragEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor dragCursor, Vector3D from, Vector3D to) {
+	public DragEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor dragCursor, Point2D.Float from, Point2D.Float to) {
 		super(source, id, targetComponent);
 		this.dragCursor = dragCursor;
 		this.from = from;
 		this.to = to;
-		this.translationVect = to.getSubtracted(from);
+		this.translationVect = new Point2D.Float(to.x - from.x, to.y - from.y);
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class DragEvent extends MTGestureEvent {
 	 * 
 	 * @return the from
 	 */
-	public Vector3D getFrom() {
+	public Point2D.Float getFrom() {
 		return from;
 	}
 
@@ -84,7 +84,7 @@ public class DragEvent extends MTGestureEvent {
 	 * 
 	 * @return the to
 	 */
-	public Vector3D getTo() {
+	public Point2D.Float getTo() {
 		return to;
 	}
 
@@ -93,7 +93,7 @@ public class DragEvent extends MTGestureEvent {
 	 * 
 	 * @return the translation vect
 	 */
-	public Vector3D getTranslationVect() {
+	public Point2D.Float getTranslationVect() {
 		return translationVect;
 	}
 

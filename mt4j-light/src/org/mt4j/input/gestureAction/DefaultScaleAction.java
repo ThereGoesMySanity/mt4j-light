@@ -22,7 +22,7 @@
 //import org.mt4j.input.inputProcessors.IGestureEventListener;
 //import org.mt4j.input.inputProcessors.MTGestureEvent;
 //import org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor.ScaleEvent;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //
 //
 //
@@ -161,7 +161,7 @@
 //					MTComponent comp = (MTComponent) target;
 //
 //					//FIXME actually we should use globalmatrix but performance is better for localMatrix..
-//					Vector3D currentScale = comp.getLocalMatrix().getScale(); 
+//					Point2D.Float currentScale = comp.getLocalMatrix().getScale(); 
 //
 //					//						if (currentScale.x != currentScale.y){
 //					//							System.out.println("non uniform scale!");

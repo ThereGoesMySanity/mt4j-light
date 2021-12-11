@@ -26,7 +26,7 @@
 //import org.mt4j.input.inputProcessors.componentProcessors.tapAndHoldProcessor.TapAndHoldEvent;
 //import org.mt4j.util.MTColor;
 //import org.mt4j.util.camera.MTCamera;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //import org.mt4j.util.math.Vertex;
 //
 //import processing.core.PApplet;
@@ -65,7 +65,7 @@
 //		
 //		cam = new MTCamera(app);
 //		
-//		e = new HoldEllipse(app, new Vector3D(0, 0), 35, 35, 50);
+//		e = new HoldEllipse(app, new Point2D.Float(0, 0), 35, 35, 50);
 //		e.setPickable(false);
 //		e.unregisterAllInputProcessors();
 //		e.setStrokeColor(new MTColor(240,50,50,200));
@@ -117,7 +117,7 @@
 //			parent.addChild(e);
 //			e.setDegrees(0);
 //			e.recreate(false);
-//			e.setPositionGlobal(new Vector3D(t.getLocationOnScreen().x, t.getLocationOnScreen().y));
+//			e.setPositionGlobal(new Point2D.Float(t.getLocationOnScreen().x, t.getLocationOnScreen().y));
 //			break;
 //		case TapAndHoldEvent.GESTURE_UPDATED:
 //			e.setVisible(true);
@@ -168,7 +168,7 @@
 //		 * @param radiusY the radius y
 //		 * @param segments the segments
 //		 */
-//		public HoldEllipse(PApplet applet, Vector3D centerPoint, float radiusX,float radiusY, int segments) {
+//		public HoldEllipse(PApplet applet, Point2D.Float centerPoint, float radiusX,float radiusY, int segments) {
 //			super(applet, centerPoint, radiusX, radiusY, segments);
 //			this.segments = segments;
 //			

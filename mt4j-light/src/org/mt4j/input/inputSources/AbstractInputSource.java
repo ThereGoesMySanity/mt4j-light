@@ -18,6 +18,7 @@
 package org.mt4j.input.inputSources;
 
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -25,7 +26,6 @@ import org.mt4j.AbstractMTApplication;
 import org.mt4j.AbstractMTLayer;
 import org.mt4j.IPreDrawAction;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.util.ArrayDeque;
 
 
 /**

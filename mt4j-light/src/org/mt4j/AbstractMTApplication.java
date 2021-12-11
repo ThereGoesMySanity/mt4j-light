@@ -1,13 +1,12 @@
 package org.mt4j;
 
 import java.util.ArrayList;
+import java.util.ArrayDeque;
 import java.util.Iterator;
 import java.util.List;
 
 import org.mt4j.input.DesktopInputManager;
 import org.mt4j.input.InputManager;
-import org.mt4j.input.inputSources.IinputSourceListener;
-import org.mt4j.util.ArrayDeque;
 
 import java.awt.Window;
 import java.awt.Point;

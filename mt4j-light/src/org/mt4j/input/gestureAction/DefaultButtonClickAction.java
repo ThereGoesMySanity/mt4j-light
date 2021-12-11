@@ -25,7 +25,7 @@
 //import org.mt4j.input.inputProcessors.IGestureEventListener;
 //import org.mt4j.input.inputProcessors.MTGestureEvent;
 //import org.mt4j.input.inputProcessors.componentProcessors.tapProcessor.TapEvent;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //
 //
 ///**
@@ -157,8 +157,8 @@
 //	 * 
 //	 * @return the ref comp center local
 //	 */
-//	protected Vector3D getRefCompCenterLocal(){
-//		Vector3D centerPoint;
+//	protected Point2D.Float getRefCompCenterLocal(){
+//		Point2D.Float centerPoint;
 //		if (this.getReferenceComp().hasBounds()){
 //			centerPoint = this.getReferenceComp().getBounds().getCenterPointLocal();
 //			centerPoint.transform(this.getReferenceComp().getLocalMatrix()); //macht den punkt in self space
@@ -199,7 +199,7 @@
 //	 * @param height the height
 //	 */
 //	protected void resize(float width, float height){
-//		Vector3D centerPoint = this.getRefCompCenterLocal();
+//		Point2D.Float centerPoint = this.getRefCompCenterLocal();
 //		this.getCompToResize().scale(width* (1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT)), width* (1/this.getReferenceComp().getWidthXY(TransformSpace.RELATIVE_TO_PARENT)), 1, centerPoint);
 ////		this.getCompToResize().scale(width, width, 1, centerPoint);
 //	}

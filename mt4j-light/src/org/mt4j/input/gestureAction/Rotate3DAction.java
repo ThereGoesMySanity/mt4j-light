@@ -120,9 +120,9 @@
 //			gl.glVertex3f(lastRotateEvent.getRotationPoint().x,lastRotateEvent.getRotationPoint().y,lastRotateEvent.getRotationPoint().z);
 //			gl.glEnd();
 //			gl.glBegin(GL.GL_LINES);
-//			Vector3D rotPoint = Tools3D.projectPointToPlane(lastRotateEvent.getRotationPoint(), ((MTApplication)pApplet).getScenes()[0].getSceneCam().getFrustum(), ((MTApplication)pApplet).getScenes()[0].getSceneCam().getFrustum().getZValueOfNearPlane()-0.001f, (MTApplication)pApplet);
+//			Point2D.Float rotPoint = Tools3D.projectPointToPlane(lastRotateEvent.getRotationPoint(), ((MTApplication)pApplet).getScenes()[0].getSceneCam().getFrustum(), ((MTApplication)pApplet).getScenes()[0].getSceneCam().getFrustum().getZValueOfNearPlane()-0.001f, (MTApplication)pApplet);
 //			gl.glVertex3f(rotPoint.x,rotPoint.y,rotPoint.z);
-//			Vector3D axisAdded = rotPoint.getAdded(lastRotateEvent.getRotationAxis());
+//			Point2D.Float axisAdded = rotPoint.getAdded(lastRotateEvent.getRotationAxis());
 //			//axisAdded.scaleLocal(20.0f);
 //			gl.glVertex3f(axisAdded.x, axisAdded.y, axisAdded.z);
 //			gl.glVertex3f(300.0f,400.0f,((MTApplication)pApplet).getScenes()[0].getSceneCam().getFrustum().getZValueOfNearPlane()-1.0f);

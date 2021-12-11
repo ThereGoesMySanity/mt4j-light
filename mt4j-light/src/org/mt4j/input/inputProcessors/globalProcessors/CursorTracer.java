@@ -30,8 +30,7 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.util.PlatformUtil;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 /**
  * The Class CursorTracer. A global input processor tracking all AbstractCursorInputEvt events and
@@ -60,9 +59,9 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 		this.app = mtApp;
 		this.cursorIDToDisplayShape = new HashMap<InputCursor, RectangularShape>();
 		
-		if (PlatformUtil.isAndroid()){
-			ellipseRadius = 30;
-		}
+//		if (PlatformUtil.isAndroid()){
+//			ellipseRadius = 30;
+//		}
 		
 //		this.overlayGroup = new MTComponent(app, "Cursor Trace group", new MTCamera(app));
 //		this.overlayGroup.setDepthBufferDisabled(true);
@@ -133,7 +132,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * 
 	 * @return the abstract shape
 	 */
-	protected void drawDisplayComponent(Graphics2D g, RectangularShape displayShape, Vector3D position){
+	protected void drawDisplayComponent(Graphics2D g, RectangularShape displayShape, Point2D.Float position){
 		g.setStroke(new BasicStroke(2));
 		g.setColor(new Color(100, 130, 220, 255));
 		displayShape.setFrameFromCenter(position.x, position.y, position.x + ellipseRadius, position.y + ellipseRadius);
@@ -149,7 +148,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 		if (inputEvent instanceof AbstractCursorInputEvt) {
 			AbstractCursorInputEvt cursorEvt = (AbstractCursorInputEvt)inputEvent;
 			InputCursor c = cursorEvt.getCursor();
-			Vector3D position = new Vector3D(cursorEvt.getX(), cursorEvt.getY());
+			Point2D.Float position = new Point2D.Float(cursorEvt.getX(), cursorEvt.getY());
 			
 			AbstractMTLayer<?> layer = (AbstractMTLayer<?>)c.getTarget();
 			Graphics2D graphics = layer.getGraphics();

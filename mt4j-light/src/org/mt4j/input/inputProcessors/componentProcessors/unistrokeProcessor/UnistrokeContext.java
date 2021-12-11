@@ -29,7 +29,7 @@
 //import org.mt4j.util.MTColor;
 //import org.mt4j.util.math.Tools3D;
 //import org.mt4j.util.math.ToolsGeometry;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //import org.mt4j.util.math.Vertex;
 //
 //import processing.core.PApplet;
@@ -46,7 +46,7 @@
 //	private InputCursor cursor;
 //	
 //	/** The new position. */
-//	private Vector3D newPosition;
+//	private Point2D.Float newPosition;
 //
 //	/** The visualizer. */
 //	private MTPolygon visualizer;
@@ -55,16 +55,16 @@
 //	private Vertex[] vertexPoints;
 //	
 //	/** The points. */
-//	private List<Vector3D> points;
+//	private List<Point2D.Float> points;
 //	
 //	/** The points_resampled. */
-//	private List<Vector3D> points_resampled;
+//	private List<Point2D.Float> points_resampled;
 //	
 //	/** The plane normal. */
-//	private Vector3D planeNormal;
+//	private Point2D.Float planeNormal;
 //	
 //	/** The point in plane. */
-//	private Vector3D pointInPlane;
+//	private Point2D.Float pointInPlane;
 //	
 //	/** The pa. */
 //	private PApplet pa;
@@ -89,7 +89,7 @@
 //	 * @param dollarUtils the dollar utils
 //	 * @param target the target
 //	 */
-//	public UnistrokeContext(PApplet pa, Vector3D planeNormal, Vector3D pointInPlane, InputCursor cursor, Recognizer recognizer, UnistrokeUtils dollarUtils, AbstractMTLayer<?> target) {
+//	public UnistrokeContext(PApplet pa, Point2D.Float planeNormal, Point2D.Float pointInPlane, InputCursor cursor, Recognizer recognizer, UnistrokeUtils dollarUtils, AbstractMTLayer<?> target) {
 //		gestureAborted = false;
 //		this.cursor = cursor;
 //		this.planeNormal = planeNormal;
@@ -99,9 +99,9 @@
 //		this.dollarUtils = dollarUtils;
 //		this.target = target;
 //		
-//		//		Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(Tools3D	.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY()),
+//		//		Point2D.Float newPos = ToolsGeometry.getRayPlaneIntersection(Tools3D	.getCameraPickRay(pa, camera, cursor.getCurrentEvent().getPosX(), cursor.getCurrentEvent().getPosY()),
 //		//				planeNormal, pointInPlane);
-//		Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
+//		Point2D.Float newPos = ToolsGeometry.getRayPlaneIntersection(
 //				Tools3D.getCameraPickRay(pa, target, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY()), 
 //				planeNormal, 
 //				pointInPlane);
@@ -115,7 +115,7 @@
 //			return;
 //		}
 //		
-//		points = new ArrayList<Vector3D>();
+//		points = new ArrayList<Point2D.Float>();
 //		vertexPoints = new Vertex[] {};
 //		
 //		this.newPosition = newPos;
@@ -145,7 +145,7 @@
 //	 */
 //	public void update(InputCursor m) {
 //		if (!gestureAborted) {
-//			Vector3D newPos = ToolsGeometry.getRayPlaneIntersection(
+//			Point2D.Float newPos = ToolsGeometry.getRayPlaneIntersection(
 //					Tools3D.getCameraPickRay(pa, target, cursor.getCurrentEvtPosX(), cursor.getCurrentEvtPosY()), 
 //					planeNormal, 
 //					pointInPlane);
@@ -161,15 +161,15 @@
 //				numPoints = 64 + (int)Math.log(points.size() - 64);
 //			}
 //
-//			points_resampled = new ArrayList<Vector3D>();
-//			for (Vector3D point: points) {
-//				points_resampled.add(new Vector3D(point.getX(), point.getY()));
+//			points_resampled = new ArrayList<Point2D.Float>();
+//			for (Point2D.Float point: points) {
+//				points_resampled.add(new Point2D.Float(point.getX(), point.getY()));
 //			}
 //
 //			points_resampled = dollarUtils.Resample(points_resampled, numPoints, Direction.CLOCKWISE);
 //
 //			tempList = new ArrayList<Vertex>();
-//			for (Vector3D point: points_resampled) { //TODO avoid loop copy?
+//			for (Point2D.Float point: points_resampled) { //TODO avoid loop copy?
 //				tempList.add(new Vertex(point.getX(), point.getY()));
 //			}
 //
@@ -202,7 +202,7 @@
 //	 *
 //	 * @return the points
 //	 */
-//	protected List<Vector3D> getPoints() {
+//	protected List<Point2D.Float> getPoints() {
 //		return points;
 //	}
 //
@@ -211,7 +211,7 @@
 //	 *
 //	 * @param points the new points
 //	 */
-//	protected void setPoints(List<Vector3D> points) {
+//	protected void setPoints(List<Point2D.Float> points) {
 //		this.points = points;
 //	}
 //

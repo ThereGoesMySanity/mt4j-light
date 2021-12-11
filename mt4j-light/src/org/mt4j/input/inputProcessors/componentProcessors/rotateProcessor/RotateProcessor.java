@@ -26,7 +26,7 @@ import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 /**
  * The Class RotateProcessor. Rotation multitouch gesture.
@@ -91,7 +91,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 					if (!rc.isGestureAborted()){
 						this.getLock(otherCursor, newCursor);
 						logger.debug(this.getName() + " we could lock both cursors!");
-						this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), otherCursor, newCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
+						this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), otherCursor, newCursor, new Point2D.Float(0, 0), rc.getRotationPoint(), 0f));
 					}else{
 						logger.debug(this.getName() + " gesture aborted, probably at least 1 finger not on component!");
 						rc = null;
@@ -111,7 +111,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
 		if (rc != null && alreadyLockedCursors.size() == 2 && alreadyLockedCursors.contains(m)){
 			float rotationAngleDegrees = rc.updateAndGetRotationAngle(m);
-			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), rc.getPinFingerCursor(), rc.getRotateFingerCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), rotationAngleDegrees));
+			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), rc.getPinFingerCursor(), rc.getRotateFingerCursor(), new Point2D.Float(0, 0), rc.getRotationPoint(), rotationAngleDegrees));
 		}
 	}
 
@@ -146,7 +146,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	private void endGesture(InputCursor leftOverCursor, AbstractCursorInputEvt positionEvent, InputCursor firstCursor, InputCursor secondCursor){
 		this.unLock(leftOverCursor);
-		this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
+		this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, new Point2D.Float(0, 0), rc.getRotationPoint(), 0));
 		this.rc = null;
 	}
 	
@@ -163,7 +163,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			//TODO do we have to unlock the 2nd cursor, besides "c" ??
 			this.unLockAllCursors();
 			//FIXME TEST
-			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), rc.getFirstCursor(), rc.getSecondCursor(), Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0));
+			this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), rc.getFirstCursor(), rc.getSecondCursor(), new Point2D.Float(0, 0), rc.getRotationPoint(), 0));
 			rc = null;
 			logger.debug(this.getName() + " cursor:" + c.getId() + " CURSOR LOCKED. Was an active cursor in this gesture!");
 		}
@@ -194,7 +194,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 				rc = newContext;
 				this.getLock(firstCursor, secondCursor);
 				//FIXME TEST
-				this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, Vector3D.ZERO_VECTOR, rc.getRotationPoint(), 0f));
+				this.fireGestureEvent(new RotateEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, new Point2D.Float(0, 0), rc.getRotationPoint(), 0f));
 				logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 			}else{
 				rc = null;
@@ -213,28 +213,28 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	private class RotationContext {
 
 		/** The pin finger start. */
-		private Vector3D pinFingerStart;
+		private Point2D.Float pinFingerStart;
 
 		/** The pin finger last. */
-		private Vector3D pinFingerLast;
+		private Point2D.Float pinFingerLast;
 
 		/** The pin finger new. */
-		private Vector3D pinFingerNew;
+		private Point2D.Float pinFingerNew;
 
 		/** The rotate finger start. */
-		private Vector3D rotateFingerStart;
+		private Point2D.Float rotateFingerStart;
 
 		/** The rotate finger last. */
-		private Vector3D rotateFingerLast;
+		private Point2D.Float rotateFingerLast;
 
 		/** The rotate finger new. */
-		private Vector3D rotateFingerNew;
+		private Point2D.Float rotateFingerNew;
 
 		/** The last rotation vect. */
-		private Vector3D lastRotationVect;
+		private Point2D.Float lastRotationVect;
 
 		/** The rotation point. */
-		private Vector3D rotationPoint;
+		private Point2D.Float rotationPoint;
 
 		/** The pin finger cursor. */
 		private InputCursor pinFingerCursor; 
@@ -255,39 +255,39 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			this.pinFingerCursor = pinFingerCursor;
 			this.rotateFingerCursor = rotateFingerCursor;
 
-//			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
-			Vector3D interPoint = pinFingerCursor.getPosition();
+//			Point2D.Float interPoint = getIntersection(applet, object, pinFingerCursor);
+			Point2D.Float interPoint = pinFingerCursor.getPosition();
 			if (interPoint !=null)
 				pinFingerNew = interPoint;
 			else{
 				logger.warn(getName() + " Pinfinger NEW = NULL");
-				pinFingerNew = new Vector3D();
+				pinFingerNew = new Point2D.Float();
 				gestureAborted = true;
 			}
 
 			//Use lastEvent when resuming with another cursor that started long ago
-//			Vector3D interPointRot = getIntersection(applet, object, rotateFingerCursor);
-			Vector3D interPointRot = rotateFingerCursor.getPosition();
+//			Point2D.Float interPointRot = getIntersection(applet, object, rotateFingerCursor);
+			Point2D.Float interPointRot = rotateFingerCursor.getPosition();
 
 			if (interPointRot !=null)
 				rotateFingerStart = interPointRot;
 			else{
 				logger.warn(getName() + " rotateFingerStart = NULL");
-				rotateFingerStart = new Vector3D();
+				rotateFingerStart = new Point2D.Float();
 				//TODO ABORT THE Rotation HERE!
 				gestureAborted = true;
 			}
 
-			this.pinFingerStart = pinFingerNew.getCopy(); 
+			this.pinFingerStart = (Point2D.Float) pinFingerNew.clone(); 
 
-			this.pinFingerLast	= pinFingerStart.getCopy(); 
+			this.pinFingerLast	= (Point2D.Float) pinFingerStart.clone(); 
 
-			this.rotateFingerLast	= rotateFingerStart.getCopy();
-			this.rotateFingerNew	= rotateFingerStart.getCopy();
-			this.rotationPoint = pinFingerNew.getCopy();
+			this.rotateFingerLast	= (Point2D.Float) rotateFingerStart.clone();
+			this.rotateFingerNew	= (Point2D.Float) rotateFingerStart.clone();
+			this.rotationPoint = (Point2D.Float) pinFingerNew.clone();
 
 			//Get the rotation vector for reference for the next rotation
-			this.lastRotationVect = rotateFingerStart.getSubtracted(pinFingerNew);
+			this.lastRotationVect = new Point2D.Float(rotateFingerStart.x - pinFingerNew.x, rotateFingerStart.y - pinFingerNew.y);
 
 			//FIXME REMOVE!
 //			dragPlaneNormal = ((MTPolygon)object).getNormal();
@@ -325,14 +325,16 @@ public class RotateProcessor extends AbstractCursorProcessor {
 
 			//TODO drop Z values after that?
 			//calculate the vector between the rotation finger vectors
-			Vector3D currentRotationVect = rotateFingerNew.getSubtracted(pinFingerNew).normalizeLocal(); //TEST normalize rotation vector
+			Point2D.Float currentRotationVect = new Point2D.Float(rotateFingerNew.x - pinFingerNew.x, rotateFingerNew.y - pinFingerNew.y); //TEST normalize rotation vector
+			float magnitude = (float) -currentRotationVect.distance(0, 0);
+			currentRotationVect.setLocation(currentRotationVect.x / magnitude, currentRotationVect.y / magnitude);
 
 			//calculate the angle between the rotaion finger vectors
-			newAngleRad 	= Vector3D.angleBetween(lastRotationVect, currentRotationVect);
-			newAngleDegrees = (float)Math.toDegrees(newAngleRad); 
+			newAngleRad 	= (float) (Math.atan2(currentRotationVect.y, currentRotationVect.x) - Math.atan2(lastRotationVect.y, lastRotationVect.x));
+			newAngleDegrees = (float) Math.toDegrees(newAngleRad);
 
 			//FIXME EXPERIMENTAL BECAUSE ANGLEBETWEEN GIVES ROTATIONS SOMETIMES WHEN BOTH VECTORS ARE EQUAL!?
-			if (rotateFingerLast.equalsVector(rotateFingerNew) && pinFingerLast.equalsVector(pinFingerNew)){
+			if (rotateFingerLast.equals(rotateFingerNew) && pinFingerLast.equals(pinFingerNew)){
 				//logger.debug("Angle gleich lassen");
 				newAngleDegrees = 0.0f;
 			}else{
@@ -341,11 +343,11 @@ public class RotateProcessor extends AbstractCursorProcessor {
 
 //			logger.debug("lastRotVect: " + lastRotationVect + " currentROtationVect: " + currentRotationVect + " Deg: " + newAngleDegrees);
 
-			Vector3D cross = lastRotationVect.getCross(currentRotationVect);
-			//Get the direction of rotation
-			if (cross.getZ() < 0){
-				newAngleDegrees*=-1;
-			}
+//			float cross = (currentRotationVect.y * lastRotationVect.x - currentRotationVect.x * lastRotationVect.y);
+//			//Get the direction of rotation
+//			if (cross < 0){
+//				newAngleDegrees*=-1;
+//			}
 
 			//Check if the current and last rotation vectors are equal or not 
 			if (!Float.isNaN(newAngleDegrees)/*!String.valueOf(newAngleDegrees).equalsIgnoreCase("NaN")*/){
@@ -365,7 +367,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		 * Update rotate finger.
 		 */
 		private void updateRotateFinger(){
-			Vector3D newRotateFingerPos = rotateFingerCursor.getPosition();
+			Point2D.Float newRotateFingerPos = rotateFingerCursor.getPosition();
 			//Update the field
 			if (newRotateFingerPos != null){
 				this.rotateFingerNew = newRotateFingerPos;
@@ -380,7 +382,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		 * Update pin finger.
 		 */
 		private void updatePinFinger(){
-			Vector3D newPinFingerPos = pinFingerCursor.getPosition();
+			Point2D.Float newPinFingerPos = pinFingerCursor.getPosition();
 			
 			if (newPinFingerPos != null){
 				// Update pinfinger with new position
@@ -398,7 +400,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		 * 
 		 * @return the rotation point
 		 */
-		public Vector3D getRotationPoint() {
+		public Point2D.Float getRotationPoint() {
 			return rotationPoint;
 		}
 

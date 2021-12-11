@@ -5,7 +5,7 @@
 //import java.util.Stack;
 //
 //import org.mt4j.input.inputProcessors.componentProcessors.unistrokeProcessor.UnistrokeTemplates.Template;
-//import org.mt4j.util.math.Vector3D;
+//import java.awt.geom.Point2D;
 //
 ///**
 // * The Class MTDollarUtils, all calculations for the Gesture Recognizer
@@ -162,19 +162,19 @@
 //			
 //		}
 //		
-//		public void record(List<Vector3D> points) {
+//		public void record(List<Point2D.Float> points) {
 //			points = Resample(points, 64, Direction.CLOCKWISE);
 //
 //			
 //			System.out.println("Begin Gesture");
 //			int position = 1;
-//			for (Vector3D point: points) {
+//			for (Point2D.Float point: points) {
 //				if (position < 4) {
 //					position++;
-//					System.out.print("new Vector3D(" + (int)point.getX() + "," + (int)point.getY() + "),");
+//					System.out.print("new Point2D.Float(" + (int)point.getX() + "," + (int)point.getY() + "),");
 //				} else {
 //					position = 1;
-//					System.out.println("new Vector3D(" + (int)point.getX() + "," + (int)point.getY() + "),");
+//					System.out.println("new Point2D.Float(" + (int)point.getX() + "," + (int)point.getY() + "),");
 //				}
 //				
 //				
@@ -221,7 +221,7 @@
 //		 * @param points the points
 //		 * @return the dollar gesture
 //		 */
-//		UnistrokeGesture Recognize(List<Vector3D> points) {
+//		UnistrokeGesture Recognize(List<Point2D.Float> points) {
 //				points = Resample(points, getNumPoints(), Direction.CLOCKWISE);
 //			points = RotateToZero(points);
 //			points = ScaleToSquare(points, getSquareSize());
@@ -266,22 +266,22 @@
 //	 * @param dir the direction
 //	 * @return the resampled list of points
 //	 */
-//	List<Vector3D> Resample(List<Vector3D> points, int n, Direction dir)
+//	List<Point2D.Float> Resample(List<Point2D.Float> points, int n, Direction dir)
 //	{
 //	   float I = PathLength(points) / ( (float)n -1.0f );
 //	   float D = 0.0f;
-//	   List<Vector3D> newpoints = new ArrayList<Vector3D>();
-//	   Stack<Vector3D> stack = new Stack<Vector3D>();
+//	   List<Point2D.Float> newpoints = new ArrayList<Point2D.Float>();
+//	   Stack<Point2D.Float> stack = new Stack<Point2D.Float>();
 //
 //
 //
 //	   if (dir == Direction.CLOCKWISE) {
-//		   for(Vector3D point: points)
+//		   for(Point2D.Float point: points)
 //		   {
 //		     stack.insertElementAt(point, 0);
 //		   }
 //	   } else {
-//		   for(Vector3D point: points)
+//		   for(Point2D.Float point: points)
 //		   {
 //		     stack.push(point);
 //		   }
@@ -289,20 +289,20 @@
 //
 //	   while( !stack.isEmpty())
 //	   {
-//	       Vector3D pt1 = stack.pop();
+//	       Point2D.Float pt1 = stack.pop();
 //
 //	       if( stack.isEmpty())
 //	       {
 //	         newpoints.add(pt1);
 //	         continue;
 //	       }
-//	       Vector3D pt2 = stack.peek();
+//	       Point2D.Float pt2 = stack.peek();
 //	       float d = pt1.distance2D(pt2);
 //	       if( (D + d) >= I)
 //	       {
 //	          float qx = pt1.getX() + (( I - D ) / d ) * (pt2.getX() - pt1.getX());
 //	          float qy = pt1.getY() + (( I - D ) / d ) * (pt2.getY() - pt1.getY());
-//	          Vector3D q = new Vector3D( qx, qy);
+//	          Point2D.Float q = new Point2D.Float( qx, qy);
 //	          newpoints.add(q);
 //	          stack.push( q );
 //	          D = 0.0f;
@@ -327,15 +327,15 @@
 //	 * @param sz the size
 //	 * @return the modified list
 //	 */
-//	List<Vector3D> ScaleToSquare( List<Vector3D> points, float sz)
+//	List<Point2D.Float> ScaleToSquare( List<Point2D.Float> points, float sz)
 //	{
 //	    Rectangle B = BoundingBox( points );
-//	    List<Vector3D> newpoints = new ArrayList<Vector3D>();
-//	    for(Vector3D point: points)
+//	    List<Point2D.Float> newpoints = new ArrayList<Point2D.Float>();
+//	    for(Point2D.Float point: points)
 //	    {
 //	       float qx = point.getX() * (sz / B.Width);
 //	       float qy = point.getY() * (sz / B.Height);
-//	       newpoints.add(new Vector3D(qx, qy));
+//	       newpoints.add(new Point2D.Float(qx, qy));
 //	    }
 //	    return  newpoints;
 //	}
@@ -350,7 +350,7 @@
 //	 * @param threshold the threshold
 //	 * @return the Distance at best Angle
 //	 */
-//	float DistanceAtBestAngle( List<Vector3D> points, Template T, float a, float b, float threshold)
+//	float DistanceAtBestAngle( List<Point2D.Float> points, Template T, float a, float b, float threshold)
 //	{
 //	   float x1 = Phi * a + (1 - Phi) * b;
 //	   float f1 = DistanceAtAngle(points, T, x1);
@@ -387,7 +387,7 @@
 //	 * @param theta the angle theta
 //	 * @return the distance at angle theta
 //	 */
-//	float DistanceAtAngle( List<Vector3D> points, Template T, float theta)
+//	float DistanceAtAngle( List<Point2D.Float> points, Template T, float theta)
 //	{
 //	  RotateBy( points, theta);
 //	  return PathDistance( points, T.Points);
@@ -400,15 +400,15 @@
 //	 * @param points the points
 //	 * @return the translated points
 //	 */
-//	List<Vector3D> TranslateToOrigin( List<Vector3D> points)
+//	List<Point2D.Float> TranslateToOrigin( List<Point2D.Float> points)
 //	{
-//	   Vector3D c = Centroid( points);
-//	   List<Vector3D> newpoints = new ArrayList<Vector3D>();
-//	   for(Vector3D point: points)
+//	   Point2D.Float c = Centroid( points);
+//	   List<Point2D.Float> newpoints = new ArrayList<Point2D.Float>();
+//	   for(Point2D.Float point: points)
 //	   {
 //	     float qx = point.getX() - c.getX();
 //	     float qy = point.getY() - c.getY();
-//	     newpoints.add(new Vector3D(qx, qy));
+//	     newpoints.add(new Point2D.Float(qx, qy));
 //	   }
 //	   return newpoints;
 //	}
@@ -423,10 +423,10 @@
 //	 * @param points the points
 //	 * @return the path length
 //	 */
-//	private float PathLength (List<Vector3D> points) {
+//	private float PathLength (List<Point2D.Float> points) {
 //		float length = 0;
-//		Vector3D lastPosition = null;
-//		for (Vector3D v: points) {
+//		Point2D.Float lastPosition = null;
+//		for (Point2D.Float v: points) {
 //			if (lastPosition == null) lastPosition = v;
 //			length += v.distance2D(lastPosition);
 //			lastPosition = v;
@@ -442,7 +442,7 @@
 //	 * @param pts2 the second set of points
 //	 * @return the Path distance
 //	 */
-//	float PathDistance( List<Vector3D> pts1, List<Vector3D> pts2)
+//	float PathDistance( List<Point2D.Float> pts1, List<Point2D.Float> pts2)
 //	{
 //	   if( pts1.size() != pts2.size())
 //	   {
@@ -463,14 +463,14 @@
 //	 * @param points the points inside the Bounding Box
 //	 * @return the rectangle
 //	 */
-//	Rectangle BoundingBox( List<Vector3D> points)
+//	Rectangle BoundingBox( List<Point2D.Float> points)
 //	{
 //	  float minX = Infinity;
 //	  float maxX = -Infinity;
 //	  float minY = Infinity;
 //	  float maxY = -Infinity;
 //
-//	  for(Vector3D point: points)
+//	  for(Point2D.Float point: points)
 //	  {
 //	    minX = Math.min( point.getX(), minX);
 //	    maxX = Math.max( point.getX(), maxX);
@@ -488,10 +488,10 @@
 //	 * @param points the points
 //	 * @return the Centroid
 //	 */
-//	Vector3D Centroid(List<Vector3D> points)
+//	Point2D.Float Centroid(List<Point2D.Float> points)
 //	{
-//	  Vector3D centroid = new Vector3D(0, 0);
-//	  for(Vector3D point: points)
+//	  Point2D.Float centroid = new Point2D.Float(0, 0);
+//	  for(Point2D.Float point: points)
 //	  {
 //		  centroid.setX(centroid.getX() + point.getX());
 //		  centroid.setY(centroid.getY() + point.getY());
@@ -508,18 +508,18 @@
 //	 * @param theta the theta
 //	 * @return rotated list of points
 //	 */
-//	List<Vector3D>  RotateBy( List<Vector3D> points, float theta)
+//	List<Point2D.Float>  RotateBy( List<Point2D.Float> points, float theta)
 //	{
-//	   Vector3D c = Centroid( points );
+//	   Point2D.Float c = Centroid( points );
 //	   float Cos = (float)Math.cos( theta );
 //	   float Sin = (float)Math.sin( theta );
 //
-//	   List<Vector3D> newpoints = new ArrayList<Vector3D>();
-//	   for(Vector3D point: points)
+//	   List<Point2D.Float> newpoints = new ArrayList<Point2D.Float>();
+//	   for(Point2D.Float point: points)
 //	   {
 //	     float qx = (point.getX() - c.getX()) * Cos - (point.getY() - c.getY()) * Sin + c.getX();
 //	     float qy = (point.getX() - c.getX()) * Sin + (point.getY() - c.getY()) * Cos + c.getY();
-//	     newpoints.add(new Vector3D( qx, qy ));
+//	     newpoints.add(new Point2D.Float( qx, qy ));
 //	   }
 //	   return newpoints;
 //	}
@@ -530,10 +530,10 @@
 //	 * @param points the points
 //	 * @return rotated list of points
 //	 */
-//	List<Vector3D> RotateToZero( List<Vector3D>  points)
+//	List<Point2D.Float> RotateToZero( List<Point2D.Float>  points)
 //	{
 //	   //FIXME: Check for empty list
-//		Vector3D c = Centroid( points );
+//		Point2D.Float c = Centroid( points );
 //	   float theta = (float)Math.atan2( c.getY() - points.get(0).getY(), c.getX() - points.get(0).getX());
 //	   return RotateBy( points, -theta);
 //

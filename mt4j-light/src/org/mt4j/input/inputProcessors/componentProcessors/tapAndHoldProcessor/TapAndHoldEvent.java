@@ -21,7 +21,7 @@ import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.math.Vector3D;
+import java.awt.geom.Point2D;
 
 /**
  * The Class TapAndHoldEvent.
@@ -34,7 +34,7 @@ public class TapAndHoldEvent extends MTGestureEvent {
 	private InputCursor cursor;
 	
 	/** The click point. */
-	private Vector3D clickPoint;
+	private Point2D.Float clickPoint;
 	
 	private int holdTime;
 	
@@ -53,7 +53,7 @@ public class TapAndHoldEvent extends MTGestureEvent {
 	 * @param m the m
 	 * @param clickPoint the click point
 	 */
-	public TapAndHoldEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor m, boolean holdComplete, Vector3D clickPoint, int holdTime, float elapsedTime, float elapsedTimeNormalized) {
+	public TapAndHoldEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor m, boolean holdComplete, Point2D.Float clickPoint, int holdTime, float elapsedTime, float elapsedTimeNormalized) {
 		super(source, id, targetComponent);
 		this.cursor = m;
 		this.holdComplete = holdComplete;
@@ -113,7 +113,7 @@ public class TapAndHoldEvent extends MTGestureEvent {
 	 * 
 	 * @return the click point
 	 */
-	public Vector3D getLocationOnScreen() {
+	public Point2D.Float getLocationOnScreen() {
 		return clickPoint;
 	}
 

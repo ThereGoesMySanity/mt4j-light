@@ -123,6 +123,7 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void installUI(JComponent c) {
 		super.installUI(c);
@@ -383,7 +384,7 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 	@Override
 	public boolean processGestureEvent(MTGestureEvent gestureEvent){
 		this.gestureEvtSupport.fireGestureEvt(gestureEvent);
-//		System.out.println("processGestureEvent on obj: " + this.getName() + " gestureEvent source: " + gestureEvent.getSource() +" ID: " +  gestureEvent.getId());
+		System.out.println("processGestureEvent: gestureEvent source: " + gestureEvent.getSource() +" ID: " +  gestureEvent.getId());
 		return false;
 	}
 	

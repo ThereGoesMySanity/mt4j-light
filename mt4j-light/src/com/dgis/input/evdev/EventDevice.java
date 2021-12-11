@@ -200,6 +200,11 @@ public class EventDevice implements IEventDevice{
 					InputEvent ev = readEvent();
 					distributeEvent(ev);
 				}
+				try {
+					fis.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		};
 		readerThread.setDaemon(true); /* We don't want this thread to prevent the JVM from terminating */

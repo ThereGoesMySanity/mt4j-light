@@ -42,6 +42,7 @@ public class LinuxMultiTouchSource extends AbstractInputSource {
 		logger.setLevel(ILogger.INFO);
 	}
 
+	@SuppressWarnings("serial")
 	private static Map<String, Point> knownDevices = new HashMap<String, Point>(){{
 			put("G2Touch Multi-Touch by G2TSP", new Point(2240, 1440));
 	}};

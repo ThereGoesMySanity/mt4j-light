@@ -5,7 +5,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="mt4j-light/native"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" path="tests"/>
 	<classpathentry kind="src" path="examples"/>
 	<classpathentry kind="lib" path="lib/jna-5.10.0.jar"/>
 	<classpathentry kind="lib" path="lib/jna-platform-5.10.0.jar"/>

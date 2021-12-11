@@ -20,8 +20,8 @@ public class FlickProcessor extends AbstractCursorProcessor {
 	/** The flick time. */
 	private int flickTime;
 	
-	/** The start pos. */
-	private Point2D.Float startPos;
+//	/** The start pos. */
+//	private Point2D.Float startPos;
 	
 	/** The start time. */
 	private long startTime;
@@ -84,7 +84,7 @@ public class FlickProcessor extends AbstractCursorProcessor {
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
 				//Lock this cursor with our priority
 				this.getLock(cursor);
-				this.startPos = cursor.getPosition();
+//				this.startPos = cursor.getPosition();
 				this.startTime = currentEvent.getTimeStamp();
 				this.flickVelocity = false;
 //				logger.debug(this.getName() + " successfully locked cursor (id:" + cursor.getId() + ")");

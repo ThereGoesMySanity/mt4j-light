@@ -17,14 +17,14 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.dragProcessor;
 
+import java.awt.geom.Point2D;
+
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Float;
 
 /**
  * The Class DragProcessor. For multi touch drag behaviour on components.

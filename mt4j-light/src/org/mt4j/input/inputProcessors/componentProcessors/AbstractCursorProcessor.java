@@ -17,6 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +32,6 @@ import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import java.awt.geom.Point2D;
-
-import processing.core.PApplet;
 
 public abstract class AbstractCursorProcessor extends AbstractComponentProcessor{
 	private List<InputCursor> activeCursors;
@@ -419,21 +417,6 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	public float getDistance(InputCursor a, InputCursor b){
 		return GestureUtils.getDistance(a, b);
 	}
-	
-	
-	/**
-	 * Gets the intersection point of a cursor and a specified component.
-	 * Can return null if the cursor doesent intersect the component.
-	 *
-	 * @param app the app
-	 * @param c the c
-	 * @return the intersection
-	 */
-	public Point2D.Float getIntersection(PApplet app, InputCursor c){
-		return c.getPosition();
-	}
-	///////////////////////////////////////////////////////
-	
 	
 	
 	/**

@@ -40,9 +40,6 @@ import java.awt.geom.Point2D;
  */
 public class CursorTracer extends AbstractGlobalInputProcessor{
 	
-	/** The app. */
-	private AbstractMTApplication app;
-	
 	/** The cursor id to display shape. */
 	private Map<InputCursor, RectangularShape> cursorIDToDisplayShape;
 	
@@ -56,74 +53,12 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * @param currentScene the current scene
 	 */
 	public CursorTracer(AbstractMTApplication mtApp){
-		this.app = mtApp;
 		this.cursorIDToDisplayShape = new HashMap<InputCursor, RectangularShape>();
 		
 //		if (PlatformUtil.isAndroid()){
 //			ellipseRadius = 30;
 //		}
-		
-//		this.overlayGroup = new MTComponent(app, "Cursor Trace group", new MTCamera(app));
-//		this.overlayGroup.setDepthBufferDisabled(true);
-//		//Send overlay group to front again if it isnt - check each frame if its on front!
-//		overlayGroup.setController(new IMTController() {
-//			public void update(long timeDelta) {
-//				MTComponent parent = overlayGroup.getParent();
-//				if (parent != null){
-//					int childCount = parent.getChildCount();
-//					if (childCount > 0
-//						&& !parent.getChildByIndex(childCount-1).equals(overlayGroup))
-//					{
-//						app.invokeLater(new Runnable() {
-//							public void run(){
-//								MTComponent parent = overlayGroup.getParent();
-//								if (parent != null){
-//									parent.removeChild(overlayGroup);
-//									parent.addChild(overlayGroup);
-//								}
-//							}
-//						});
-//					}
-//				}
-//			}
-//		});
-		
-//		MTOverlayContainer overlay = checkForExistingOverlay(scene.getCanvas());
-//		
-		
-//		//FIXME REMOVE
-//		compToCreationTime = new HashMap<MTComponent, Long>();
-//		mtApp.registerPre(this);
 	}
-
-//	private HashMap<MTComponent, Long> compToCreationTime; //FIXME REMOVE LATER
-	
-//	public void pre(){
-//		Set<MTComponent> comps = compToCreationTime.keySet();
-//		long currentTime = System.currentTimeMillis();
-//		for (MTComponent component : comps) {
-//			InputCursor c = (InputCursor) component.getUserData("Cursor");
-//			Long creationTime = compToCreationTime.get(component);
-//			long duration = currentTime - creationTime;
-//			if (duration > 1000){
-//				System.out.println("--> CURSOR: " + c.getId() + " seems to be STUCK!");
-//			}
-//		}
-//	}
-	
-//	private MTOverlayContainer checkForExistingOverlay(MTCanvas canvas){
-//		MTComponent[] canvasChildren = canvas.getChildren();
-//		MTOverlayContainer overlay = null;
-//		for (int i = 0; i < canvasChildren.length; i++) {
-//			MTComponent component = canvasChildren[i];
-//			if (component instanceof MTOverlayContainer) {
-////				MTOverlayContainer foundOverlay = (MTOverlayContainer) component;
-//				overlay = (MTOverlayContainer)component;
-//			}
-//		}
-//		return overlay;
-//	}
-	
 	/**
 	 * Creates the display component.
 	 * 

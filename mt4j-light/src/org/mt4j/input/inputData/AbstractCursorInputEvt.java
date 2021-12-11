@@ -17,9 +17,9 @@
  ***********************************************************************/
 package org.mt4j.input.inputData;
 
-import org.mt4j.AbstractMTLayer;
-import org.mt4j.input.inputSources.AbstractInputSource;
 import java.awt.geom.Point2D;
+
+import org.mt4j.input.inputSources.AbstractInputSource;
 
 /**
  * This event class is used for
@@ -31,18 +31,6 @@ import java.awt.geom.Point2D;
  * @author Christopher Ruff
  */
 public abstract class AbstractCursorInputEvt extends MTInputEvent {
-	
-//	public enum InputState{
-//		INPUT_DETECTED,
-//		INPUT_UPDATED,
-//		INPUT_ENDED
-//	}
-	
-	/** The Constant INPUT_DETECTED. 
-	 * @deprecated use INPUT_STARTED instead 
-	 * */
-	public static final int INPUT_DETECTED = 0;
-	
 	public static final int INPUT_STARTED = 0;
 	
 	public static final int INPUT_UPDATED = 1;
@@ -83,8 +71,6 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	public void setId(int id){
 		this.id = id;
 	}
-	
-
 	
 	/**
 	 * Gets the cursor.
@@ -158,31 +144,7 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	public String toString(){
 		return super.toString() + "; " + " PosX: " + positionX + " PosY: " + positionY + " InputSource: " + this.getSource(); 
 	}
-	
-	
 
 	@Override
 	abstract public Object clone() throws CloneNotSupportedException;
-	
-	
-	
-	/*
-	abstract public Inputcursor<? extends AbstractCursorInputEvt> getcursor();
-
-	
-	abstract public float getPositionX();
-
-	abstract public float getPositionY();
-	
-	abstract public boolean isAddedTocursor();
-	
-	abstract public void setAddedTocursor(boolean addedTocursor);
-	*/
-	
-	
-	
-	
-
-    
-	
 }

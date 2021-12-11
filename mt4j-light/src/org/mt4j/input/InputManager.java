@@ -53,8 +53,6 @@ public class InputManager implements IinputSourceListener {
 	
 	private List<AbstractGlobalInputProcessor> inputProcessors;
 	
-	private AbstractMTApplication app;
-	
 	/**
 	 * Instantiates a new input manager.
 	 * 
@@ -73,7 +71,6 @@ public class InputManager implements IinputSourceListener {
 	public InputManager(AbstractMTApplication app, boolean registerDefaultSources) {
 		this.registeredInputSources	= new ArrayList<AbstractInputSource>();
 		this.inputProcessors = new ArrayList<AbstractGlobalInputProcessor>();
-		this.app = app;
 		
 		if (registerDefaultSources)
 			this.registerDefaultInputSources(app);

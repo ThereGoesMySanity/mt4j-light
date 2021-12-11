@@ -429,6 +429,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		throw new Error("Not implemented yet!");
 	}
 
+	@Override
 	public int getValue() {
 		synchronized (this) {
 			readStatus();
@@ -436,6 +437,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public void setValue(int value) {
 		synchronized (this) {
 			this.value = value;
@@ -443,6 +445,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public int getMin() {
 		synchronized (this) {
 			readStatus();
@@ -450,6 +453,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public void setMin(int min) {
 		synchronized (this) {
 			this.min = min;
@@ -457,6 +461,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public int getMax() {
 		synchronized (this) {
 			readStatus();
@@ -464,6 +469,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public void setMax(int max) {
 		synchronized (this) {
 			this.max = max;
@@ -471,6 +477,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public int getFuzz() {
 		synchronized (this) {
 			readStatus();
@@ -478,6 +485,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public void setFuzz(int fuzz) {
 		synchronized (this) {
 			this.fuzz = fuzz;
@@ -485,6 +493,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public int getFlat() {
 		synchronized (this) {
 			readStatus();
@@ -492,6 +501,7 @@ class InputAxisParametersImpl implements InputAxisParameters {
 		}
 	}
 
+	@Override
 	public void setFlat(int flat) {
 		synchronized (this) {
 			this.flat = flat;

@@ -129,7 +129,7 @@ public class TapAndHoldProcessor extends AbstractCursorProcessor implements IPre
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.size() == 1){
 			InputCursor c = locked.get(0);
-			AbstractMTLayer<?> comp = c.getTarget();
+//			AbstractMTLayer<?> comp = c.getTarget();
 //			AbstractMTLayer<?> currentTarget = c.getCurrentEvent().getCurrentTarget(); //FIXME this will often return the wrong target since we are not in a processInputEvent() method!
 			AbstractMTLayer<?> currentTarget = lastCurrentTarget;
 			

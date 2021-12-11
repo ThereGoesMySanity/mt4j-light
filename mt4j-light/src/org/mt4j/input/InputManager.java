@@ -19,17 +19,15 @@ package org.mt4j.input;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.mt4j.AbstractMTApplication;
+import org.mt4j.AbstractMTLayer;
+import org.mt4j.input.inputData.AbstractCursorInputEvt;
+import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 import org.mt4j.input.inputSources.AbstractInputSource;
 import org.mt4j.input.inputSources.IinputSourceListener;
-import org.mt4j.sceneManagement.Iscene;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 
@@ -41,7 +39,7 @@ import org.mt4j.util.logging.MTLoggerFactory;
  * 
  * @author Christopher Ruff
  */
-public class InputManager {
+public class InputManager implements IinputSourceListener {
 	/** The Constant logger. */
 	protected static final ILogger logger = MTLoggerFactory.getLogger(InputManager.class.getName());
 	static{
@@ -53,20 +51,17 @@ public class InputManager {
 	/** The registered input sources. */
 	private List<AbstractInputSource> registeredInputSources;
 	
-	/** The In processor to scene. */
-	private Map<AbstractGlobalInputProcessor, Iscene> inputProcessorsToScene;
+	private List<AbstractGlobalInputProcessor> inputProcessors;
 	
-	/** The pa. */
-	protected AbstractMTApplication app;
-	
+	private AbstractMTApplication app;
 	
 	/**
 	 * Instantiates a new input manager.
 	 * 
 	 * @param pa the processing context
 	 */
-	public InputManager(AbstractMTApplication pa) {
-		this(pa, true);
+	public InputManager(AbstractMTApplication app) {
+		this(app, true);
 	}
 	
 	
@@ -75,21 +70,20 @@ public class InputManager {
 	 * 
 	 * @param pa the processing context
 	 */
-	public InputManager(AbstractMTApplication pa, boolean registerDefaultSources) {
-		super();
+	public InputManager(AbstractMTApplication app, boolean registerDefaultSources) {
 		this.registeredInputSources	= new ArrayList<AbstractInputSource>();
-		this.inputProcessorsToScene = new HashMap<AbstractGlobalInputProcessor, Iscene>();
-		this.app = pa;
+		this.inputProcessors = new ArrayList<AbstractGlobalInputProcessor>();
+		this.app = app;
 		
 		if (registerDefaultSources)
-			this.registerDefaultInputSources();
+			this.registerDefaultInputSources(app);
 	}
 	
 	
 	/**
 	 * Initialize default input sources.
 	 */
-	protected void registerDefaultInputSources(){	}
+	protected void registerDefaultInputSources(AbstractMTApplication app){	}
 	
 	
 	/**
@@ -100,9 +94,9 @@ public class InputManager {
 	public void registerInputSource(AbstractInputSource newInputSource){
 		if (!registeredInputSources.contains(newInputSource)){
 			registeredInputSources.add(newInputSource);
+			newInputSource.addInputListener(this);
 			//Add all processors to the new input source
-			Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
-            for (AbstractGlobalInputProcessor processor : set) {
+            for (AbstractGlobalInputProcessor processor : inputProcessors) {
                 //newInputSource.addInputListener(processor);
                 this.saveAddInputListenerToSource(newInputSource, processor);
             }
@@ -138,17 +132,13 @@ public class InputManager {
 		return this.registeredInputSources.toArray(new AbstractInputSource[this.registeredInputSources.size()]);
 	}
 	
-	/**
-	 * Gets the registered input sources.
-	 * 
-	 * @return the registered input sources
-	 * @deprecated use getInputSources() instead
-	 */
-	public Collection<AbstractInputSource> getRegisteredInputSources(){
-		return this.registeredInputSources;
+	public void addLayer(AbstractMTLayer<?> layer) {
+		
 	}
 	
-	
+	public void removeLayer(AbstractMTLayer<?> layer) {
+		
+	}
 	
 	/**
 	 * Registers a new inputprocessor and adds it to the inputsources as listeners.
@@ -156,19 +146,10 @@ public class InputManager {
 	 * @param scene the scene
 	 * @param inputprocessor the input processor
 	 */
-	public void registerGlobalInputProcessor(Iscene scene, AbstractGlobalInputProcessor inputprocessor){
-		//By default disable the registered global input processor, so it doesent accidently
-		//send events to a not even visible scene
-		//-Only enable it if the scene is the currently active scene
-		//-If a scene becomes active the processors will also be enabled
-//		if (app.getCurrentScene() != null && app.getCurrentScene().equals(scene)){
-		if (scene.equals(app.getCurrentScene())){
-			inputprocessor.setDisabled(false);
-		}else{
-			inputprocessor.setDisabled(true);
-		}
-		
-		inputProcessorsToScene.put(inputprocessor, scene);
+	public void registerGlobalInputProcessor(AbstractGlobalInputProcessor inputprocessor){
+		inputprocessor.setDisabled(false);
+
+		inputProcessors.add(inputprocessor);
 		//Register the processor with all registered inputsources
 		for (AbstractInputSource source: registeredInputSources){
 			this.saveAddInputListenerToSource(source, inputprocessor);
@@ -194,26 +175,8 @@ public class InputManager {
 	 * @param inputprocessor the input processor
 	 */
 	public void unregisterGlobalInputProcessor(AbstractGlobalInputProcessor inputprocessor){
-		/*
-		Set set = InprocessorToScene.keySet(); 
-		for (Iterator iter = set.iterator(); iter.hasNext();) {
-			AbstractInputprocessor processor = (AbstractInputprocessor) iter.next();
-			
-			//Check if the processor is registered here with a scene
-			if (processor.equals(inputprocessor)){
-				if (InprocessorToScene.get(processor).equals(scene)){
-					for (AbstractInputSource source: registeredInputSources){
-						source.removeInputListener(inputprocessor);
-					}
-				}
-			}
-		}
-		*/
-		
-		//Remove the input processor from the processor->scene map
-		if (inputProcessorsToScene.containsKey(inputprocessor)){
-			inputProcessorsToScene.remove(inputprocessor);	
-		}
+		//Remove the input processor
+		inputProcessors.remove(inputprocessor);	
 		
 		for (AbstractInputSource source: registeredInputSources){
 			source.removeInputListener(inputprocessor);
@@ -228,59 +191,59 @@ public class InputManager {
 	 * 
 	 * @return the scene inputprocessors
 	 */
-	public AbstractGlobalInputProcessor[] getGlobalInputProcessors(Iscene scene){
-		List<AbstractGlobalInputProcessor> processors = new ArrayList<AbstractGlobalInputProcessor>();
-		
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
-        for (AbstractGlobalInputProcessor processor : set) {
-            if (inputProcessorsToScene.get(processor).equals(scene)) {
-                processors.add(processor);
-            }
-        }
-		return processors.toArray(new AbstractGlobalInputProcessor[processors.size()]);
+	public AbstractGlobalInputProcessor[] getGlobalInputProcessors(){
+		return inputProcessors.toArray(new AbstractGlobalInputProcessor[inputProcessors.size()]);
 	}
 	
 	/**
-	 * Enables the global inputprocessors that are associated with the given scene.
+	 * Enables the global inputprocessors
 	 * 
 	 * @param scene the scene
 	 */
-	public void enableGlobalInputProcessors(Iscene scene){
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
-        for (AbstractGlobalInputProcessor processor : set) {
-            if (inputProcessorsToScene.get(processor).equals(scene)) {
-                processor.setDisabled(false);
-            }
+	public void enableGlobalInputProcessors(){
+        for (AbstractGlobalInputProcessor processor : inputProcessors) {
+        	processor.setDisabled(false);
         }
 	}
 	
 	/**
-	 * Disables the global inputprocessors that are associated with the given scene.
+	 * Disables the global inputprocessors
 	 * 
 	 * @param scene the scene
 	 */
-	public void disableGlobalInputProcessors(Iscene scene){
-		Set<AbstractGlobalInputProcessor> set = inputProcessorsToScene.keySet();
-        for (AbstractGlobalInputProcessor processor : set) {
-            if (inputProcessorsToScene.get(processor).equals(scene)) {
-                processor.setDisabled(true);
-            }
+	public void disableGlobalInputProcessors(){
+        for (AbstractGlobalInputProcessor processor : inputProcessors) {
+        	processor.setDisabled(true);
         }
 	}
 	
 	
 	/**
-	 * Removes input processors of the specified scene from listening to the registered input sources.
+	 * Removes input processors from listening to the registered input sources.
 	 * 
 	 * @param scene the scene
 	 */
-	public void removeGlobalInputProcessors(Iscene scene){
-		AbstractGlobalInputProcessor[] sceneProcessors = this.getGlobalInputProcessors(scene);
-        for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : sceneProcessors) {
+	public void removeGlobalInputProcessors(){
+        for (AbstractGlobalInputProcessor abstractGlobalInputProcessor : this.getGlobalInputProcessors()) {
             this.unregisterGlobalInputProcessor(abstractGlobalInputProcessor);
         }
 	}
 
 
-	
+	@Override
+	public boolean processInputEvent(MTInputEvent inputEvent) {
+		if (inputEvent instanceof AbstractCursorInputEvt) {
+			AbstractCursorInputEvt e = (AbstractCursorInputEvt)inputEvent;
+			e.getTarget().processInputEvent(inputEvent);
+		} else {
+			//TODO: app handles it?
+		}
+		return false;
+	}
+
+
+	@Override
+	public boolean isDisabled() {
+		return false;
+	}
 }

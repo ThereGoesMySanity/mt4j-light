@@ -19,17 +19,14 @@ package org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor;
 
 import java.util.List;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.math.Vector3D;
-
-import processing.core.PApplet;
 
 /**
  * The Class ZoomProcessor.
@@ -52,9 +49,9 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @param graphicsContext the graphics context
 	 */
-	public ZoomProcessor(PApplet graphicsContext){
-		this(graphicsContext, MT4jSettings.getInstance().getWindowWidth()/2);
-	}
+//	public ZoomProcessor(){
+//		this(MT4jSettings.getInstance().getWindowWidth()/2);
+//	}
 	
 	/**
 	 * Instantiates a new zoom processor.
@@ -62,7 +59,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 * @param graphicsContext the graphics context
 	 * @param zoomDetectRadius the zoom detect radius
 	 */
-	public ZoomProcessor(PApplet graphicsContext, float zoomDetectRadius){
+	public ZoomProcessor(float zoomDetectRadius){
 		this.zoomDetectRadius = zoomDetectRadius;
 		this.setLockPriority(2);
 	}
@@ -87,7 +84,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 						this.oldDistance = newDistance;
 						this.getLock(otherCursor, c);
 						logger.debug(this.getName() + " we could lock both cursors! And fingers in zoom distance!");
-						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, otherCursor, 0f, positionEvent.getCurrentTarget().getViewingCamera() ));
+						this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_STARTED, positionEvent.getCurrentTarget(), c, otherCursor, 0f));
 					}else{
 						logger.debug(this.getName() + " cursors not close enough to start gesture. Distance: " + newDistance);
 					}
@@ -108,9 +105,9 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 			float camZoomAmount = fingerDistance - oldDistance;
 			oldDistance = fingerDistance;
 			if (c.equals(firstCursor)){
-				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, camZoomAmount, positionEvent.getCurrentTarget().getViewingCamera()));
+				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, camZoomAmount));
 			}else{
-				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, camZoomAmount, positionEvent.getCurrentTarget().getViewingCamera()));
+				this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_UPDATED, positionEvent.getCurrentTarget(), firstCursor, secondCursor, camZoomAmount));
 			}
 		}
 	}
@@ -146,9 +143,9 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 	 * @param leftOvercursor the left over cursor
 	 * @param comp the comp
 	 */
-	private void endGesture(InputCursor inputEndedCursor, InputCursor leftOverCursor, IMTComponent3D comp){
+	private void endGesture(InputCursor inputEndedCursor, InputCursor leftOverCursor, AbstractMTLayer<?> comp){
 		this.unLock(leftOverCursor);
-		this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_ENDED, comp, inputEndedCursor, leftOverCursor, 0f, comp.getViewingCamera()));
+		this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_ENDED, comp, inputEndedCursor, leftOverCursor, 0f));
 	}
 	
 	
@@ -163,7 +160,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 		
 		List<InputCursor> locked = getLockedCursors();
 		if (locked.contains(c)){
-			this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), locked.get(0), locked.get(1), 0f, c.getCurrentTarget().getViewingCamera()));			
+			this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_CANCELED, c.getCurrentTarget(), locked.get(0), locked.get(1), 0f));			
 			this.unLockAllCursors();
 			logger.debug(this.getName() + " cursor:" + c.getId() + " cursor LOCKED. Was an active cursor in this gesture - we therefor have to stop this gesture!");
 		}
@@ -194,7 +191,7 @@ public class ZoomProcessor extends AbstractCursorProcessor {
 					this.getLock(firstCursor, secondCursor);
 					logger.debug(this.getName() + " we could lock cursors: " + firstCursor.getId() +", " + secondCursor.getId());
 					logger.debug(this.getName() + " continue with different cursors (ID: " + firstCursor.getId() + ")" + " " + "(ID: " + secondCursor.getId() + ")");
-					this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, 0f, c.getCurrentTarget().getViewingCamera() ));
+					this.fireGestureEvent(new ZoomEvent(this, MTGestureEvent.GESTURE_RESUMED, c.getCurrentTarget(), firstCursor, secondCursor, 0f));
 				}else{
 					logger.debug(this.getName() + " distance was too great between cursors: " + firstCursor.getId() +", " + secondCursor.getId() + " distance: " + newDistance);
 				}

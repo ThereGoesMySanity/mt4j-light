@@ -1,6 +1,6 @@
 package org.mt4j.input.inputProcessors.componentProcessors.flickProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 
@@ -58,7 +58,7 @@ public class FlickEvent extends MTGestureEvent {
 	 * @param direction the direction
 	 * @param isFlickComplete the is flick complete
 	 */
-	public FlickEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, FlickDirection direction, boolean isFlickComplete) {
+	public FlickEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, FlickDirection direction, boolean isFlickComplete) {
 		super(source, id, targetComponent);
 		this.direction = direction;
 		this.isFlick = isFlickComplete;

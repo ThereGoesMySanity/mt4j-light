@@ -17,11 +17,10 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.panProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -36,9 +35,6 @@ public class PanEvent extends MTGestureEvent {
 	
 	/** The translation vector. */
 	private Vector3D translationVector;
-	
-	/** The camera. */
-	private Icamera camera;
 
 	/**
 	 * Instantiates a new pan event.
@@ -50,11 +46,10 @@ public class PanEvent extends MTGestureEvent {
 	 * @param translationVector the translation vector
 	 * @param camera the camera
 	 */
-	public PanEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor firstFinger, Vector3D translationVector, Icamera camera) {
+	public PanEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFinger, Vector3D translationVector) {
 		super(source, id, targetComponent);
 		this.firstMotion = firstFinger;
 		this.translationVector = translationVector;
-		this.camera = camera;
 	}
 
 	/**
@@ -74,16 +69,4 @@ public class PanEvent extends MTGestureEvent {
 	public Vector3D getTranslationVector() {
 		return translationVector;
 	}
-
-	/**
-	 * Gets the camera.
-	 * 
-	 * @return the camera
-	 */
-	public Icamera getCamera() {
-		return camera;
-	}
-
-	
-	
 }

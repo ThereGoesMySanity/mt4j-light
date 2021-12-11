@@ -20,11 +20,10 @@ package org.mt4j.input;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import org.mt4j.components.MTComponent;
+import org.mt4j.AbstractMTApplication;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.MTInputEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
-
-import processing.core.PApplet;
 
 /**
  * The Class ComponentInputProcessorSupport. Keeps the list of registered component input processors for
@@ -37,16 +36,16 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	/** The registered processors. */
 	private ArrayList<AbstractComponentProcessor> registeredProcessors;
 	
-	/** The associated component. */
-	private MTComponent associatedComponent;
+	/** The associated layer. */
+	private AbstractMTLayer<?> associatedComponent;
 	
 	/**
 	 * Instantiates a new component input processor support.
 	 *
-	 * @param graphicsContext the graphics context
+	 * @param app the graphics context
 	 * @param associatedComponent the associated component
 	 */
-	public ComponentInputProcessorSupport(PApplet graphicsContext, MTComponent associatedComponent) {
+	public ComponentInputProcessorSupport(AbstractMTApplication app, AbstractMTLayer<?> associatedComponent) {
 		this.associatedComponent = associatedComponent;
 		this.registeredProcessors = new ArrayList<AbstractComponentProcessor>(5);
 	}
@@ -55,6 +54,7 @@ public class ComponentInputProcessorSupport implements IMTInputEventListener /*,
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.IMTInputEventListener#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
 	 */
+	@Override
 	public boolean processInputEvent(MTInputEvent inEvt){
 		boolean handled = false;
 		int pCount = registeredProcessors.size();

@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputData;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputSources.AbstractInputSource;
 
 /**
@@ -45,27 +44,6 @@ public class MTFingerInputEvt extends AbstractCursorInputEvt{
 			InputCursor m
 	) {
 		super(source, positionX, positionY, id, m);
-	}
-	
-	/**
-	 * Instantiates a new mT finger input evt.
-	 * 
-	 * @param source the source
-	 * @param target the target
-	 * @param positionX the position x
-	 * @param positionY the position y
-	 * @param id the id
-	 * @param m the m
-	 */
-	public MTFingerInputEvt(
-			AbstractInputSource source, 
-			IMTComponent3D target,
-			float positionX,
-			float positionY, 
-			int id,
-			InputCursor m
-	) {
-		super(source, target, positionX, positionY, id, m);
 	}
 
 	/* (non-Javadoc)

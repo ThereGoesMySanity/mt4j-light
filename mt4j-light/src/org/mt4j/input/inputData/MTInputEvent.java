@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputData;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.MTEvent;
 
 /**
@@ -28,7 +28,7 @@ import org.mt4j.input.MTEvent;
 public class MTInputEvent extends MTEvent {
 	
 	/** The target component. */
-	private IMTComponent3D target;
+	private AbstractMTLayer<?> target;
 
 
 	/**
@@ -40,7 +40,7 @@ public class MTInputEvent extends MTEvent {
 		this(source, null);
 	}
 	
-	public MTInputEvent(Object source, IMTComponent3D target) {
+	public MTInputEvent(Object source, AbstractMTLayer<?> target) {
 		this(source, target, true);
 	}
 	
@@ -50,7 +50,7 @@ public class MTInputEvent extends MTEvent {
 	 * @param source the source
 	 * @param target the target component
 	 */
-	public MTInputEvent(Object source, IMTComponent3D target, boolean bubbles) {
+	public MTInputEvent(Object source, AbstractMTLayer<?> target, boolean bubbles) {
 		super(source);
 		this.target = target;
 		this.propatationStopped = false;
@@ -58,22 +58,6 @@ public class MTInputEvent extends MTEvent {
 		this.eventPhase = CAPTURING_PHASE; //default?
 	}
 
-
-
-	/**
-	 * Gets the target of this input event.
-	 * <br><strong>NOTE:</strong> Not every event has a target component! To check this
-	 * we can call <code>event.hasTarget()</code>.
-	 * 
-	 * @return the target component
-	 * @deprecated use getTarget() instead
-	 * @see #getTarget()
-	 */
-	public IMTComponent3D getTargetComponent() {
-		return target;
-	}
-	
-
 	/**
 	 * Gets the target of this input event.
 	 * <br><strong>NOTE:</strong> Not every event has a target component! To check this
@@ -81,7 +65,7 @@ public class MTInputEvent extends MTEvent {
 	 * 
 	 * @return the target component
 	 */
-	public IMTComponent3D getTarget() {
+	public AbstractMTLayer<?> getTarget() {
 		return target;
 	}
 
@@ -92,7 +76,7 @@ public class MTInputEvent extends MTEvent {
 	 * 
 	 * @param targetComponent the new target component
 	 */
-	public void setTarget(IMTComponent3D targetComponent) {
+	public void setTarget(AbstractMTLayer<?> targetComponent) {
 		this.target = targetComponent;
 	}
 	
@@ -151,8 +135,7 @@ public class MTInputEvent extends MTEvent {
     	return bubbles;
     }
     
-
-    private IMTComponent3D currentTarget;
+    private AbstractMTLayer<?> currentTarget;
 	/**
      * The <code>setCurrentTarget</code> method is used by the DOM 
      * implementation to change the value of a <code>currentTarget</code> 
@@ -160,13 +143,11 @@ public class MTInputEvent extends MTEvent {
      * @param target Specifies the <code>currentTarget</code> attribute on 
      *   the <code>Event</code> interface.
      */
-    public void setCurrentTarget(IMTComponent3D target){
+    public void setCurrentTarget(AbstractMTLayer<?> target){
     	this.currentTarget = target;
     }
     
-    public IMTComponent3D getCurrentTarget(){
+    public AbstractMTLayer<?> getCurrentTarget(){
     	return this.currentTarget;
     }
-
-	
 }

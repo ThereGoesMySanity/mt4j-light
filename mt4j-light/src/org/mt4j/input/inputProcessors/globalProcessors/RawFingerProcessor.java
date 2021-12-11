@@ -32,6 +32,7 @@ import org.mt4j.input.inputData.MTInputEvent;
  */
 public class RawFingerProcessor extends AbstractGlobalInputProcessor {
 	
+	@Override
 	public void processInputEvtImpl(MTInputEvent inputEvent){ 
 //		MTFingerInputEvt touchEvt = (MTFingerInputEvt)inputEvent;
 		

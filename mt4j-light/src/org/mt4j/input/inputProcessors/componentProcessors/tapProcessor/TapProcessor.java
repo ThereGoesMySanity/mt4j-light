@@ -19,17 +19,13 @@ package org.mt4j.input.inputProcessors.componentProcessors.tapProcessor;
 
 import java.util.List;
 
-import org.mt4j.components.MTCanvas;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProcessor;
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.Vector3D;
-
-import processing.core.PApplet;
 
 /**
  * The Class TapProcessor. Tap multitouch gesture. Triggered on a component
@@ -38,9 +34,6 @@ import processing.core.PApplet;
  * @author Christopher Ruff
  */
 public class TapProcessor extends AbstractCursorProcessor {
-	
-	/** The applet. */
-	private PApplet applet;
 	
 	/** The max finger up dist. */
 	private float maxFingerUpDist;
@@ -62,8 +55,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @param pa the pa
 	 */
-	public TapProcessor(PApplet pa) {
-		this(pa, 18.0f);
+	public TapProcessor() {
+		this(18.0f);
 	}
 	
 	/**
@@ -72,8 +65,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param pa the pa
 	 * @param maxFingerUpDistance the max finger up distance
 	 */
-	public TapProcessor(PApplet pa, float maxFingerUpDistance) {
-		this(pa, maxFingerUpDistance, false, 300); 
+	public TapProcessor(float maxFingerUpDistance) {
+		this(maxFingerUpDistance, false, 300); 
 	}
 	
 	/**
@@ -83,8 +76,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param maxFingerUpDistance the max finger up distance
 	 * @param enableDoubleTap the enable double tap
 	 */
-	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap){
-		this(pa, maxFingerUpDistance, enableDoubleTap, 300);
+	public TapProcessor(float maxFingerUpDistance, boolean enableDoubleTap){
+		this(maxFingerUpDistance, enableDoubleTap, 300);
 	}
 	
 	/**
@@ -95,8 +88,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param enableDoubleTap the enable double tap
 	 * @param doubleTapTime the double tap time
 	 */
-	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime){
-		this(pa, maxFingerUpDistance, enableDoubleTap, doubleTapTime, false);
+	public TapProcessor(float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime){
+		this(maxFingerUpDistance, enableDoubleTap, doubleTapTime, false);
 	}
 
 	/**
@@ -108,9 +101,8 @@ public class TapProcessor extends AbstractCursorProcessor {
 	 * @param doubleTapTime the double tap time
 	 * @param stopEventPropagation the stop event propagation
 	 */
-	public TapProcessor(PApplet pa, float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime, boolean stopEventPropagation){
+	public TapProcessor(float maxFingerUpDistance, boolean enableDoubleTap, int doubleTapTime, boolean stopEventPropagation){
 		super(stopEventPropagation);
-		this.applet = pa;
 		this.maxFingerUpDist = maxFingerUpDistance;
 		this.setLockPriority(1);
 		this.setDebug(false);
@@ -186,18 +178,15 @@ public class TapProcessor extends AbstractCursorProcessor {
 		Vector3D buttonUpScreenPos = m.getPosition();
 		
 		//If component is detached from tree, destroyed etc
-		if (positionEvent.getCurrentTarget().getViewingCamera() == null){
+		if (positionEvent.getCurrentTarget() == null){
 			this.fireGestureEvent(new TapEvent(this, MTGestureEvent.GESTURE_ENDED, positionEvent.getCurrentTarget(), m, buttonUpScreenPos, TapEvent.TAPPED));			
 			return;
 		}
 		
-		Vector3D intersection = positionEvent.getCurrentTarget().getIntersectionGlobal(Tools3D.getCameraPickRay(applet, positionEvent.getCurrentTarget(), m.getCurrentEvent().getX(), m.getCurrentEvent().getY()));
+		Vector3D intersection = m.getPosition();
 		//logger.debug("Distance between buttondownScreenPos: " + buttonDownScreenPos + " and upScrPos: " + buttonUpScreenPos +  " is: " + Vector3D.distance(buttonDownScreenPos, buttonUpScreenPos));
 		//Check if at finger_Up the cursor is still on that object or if the cursor has moved too much 
-		if ((intersection != null || positionEvent.getCurrentTarget() instanceof MTCanvas)
-				&& 
-			Vector3D.distance2D(buttonDownScreenPos, buttonUpScreenPos) <= this.maxFingerUpDist
-		){
+		if (intersection != null && Vector3D.distance2D(buttonDownScreenPos, buttonUpScreenPos) <= this.maxFingerUpDist) {
 			//We have a valid TAP!
 			if (this.isEnableDoubleTap()){
 				//Check if it was a double tap by comparing the now time to the time of the last valid tap

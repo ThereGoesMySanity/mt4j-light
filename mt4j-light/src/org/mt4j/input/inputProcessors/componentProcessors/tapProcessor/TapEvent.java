@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.tapProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -78,7 +78,7 @@ public class TapEvent extends MTGestureEvent {
 	 * @param clickPoint the click point
 	 * @param clickID the click id
 	 */
-	public TapEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor cursor, Vector3D clickPoint, int clickID) {
+	public TapEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor cursor, Vector3D clickPoint, int clickID) {
 		super(source, id, targetComponent);
 		this.cursor = cursor;
 		this.clickPoint = clickPoint;

@@ -19,7 +19,7 @@ package org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor;
 
 import java.util.List;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -28,8 +28,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProce
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Vector3D;
 
-import processing.core.PApplet;
-
 /**
  * The Class RotateProcessor. Rotation multitouch gesture.
  * Fires RotateEvent gesture events.
@@ -37,18 +35,11 @@ import processing.core.PApplet;
  */
 public class RotateProcessor extends AbstractCursorProcessor {
 
-	/** The applet. */
-	private PApplet applet;
-	
 	/** The rc. */
 	private RotationContext rc;
 	
-	/** The drag plane normal. */
-	private Vector3D dragPlaneNormal;
-	
-	
-	public RotateProcessor(PApplet graphicsContext){
-		this(graphicsContext, false);
+	public RotateProcessor(){
+		this(false);
 	}
 	
 	/**
@@ -56,10 +47,8 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @param graphicsContext the graphics context
 	 */
-	public RotateProcessor(PApplet graphicsContext, boolean stopEventPropagation){
+	public RotateProcessor(boolean stopEventPropagation){
 		super(stopEventPropagation);
-		this.applet = graphicsContext;
-		this.dragPlaneNormal = new Vector3D(0,0,1);
 		this.setLockPriority(2);
 	}
 	
@@ -67,7 +56,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorStarted(InputCursor newCursor, AbstractCursorInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTarget();
+		AbstractMTLayer<?> comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_STARTED, Cursor: " + newCursor.getId());
 		
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
@@ -129,7 +118,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorEnded(InputCursor c, AbstractCursorInputEvt positionEvent) {
-		IMTComponent3D comp = positionEvent.getTarget();
+		AbstractMTLayer<?> comp = positionEvent.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		logger.debug("Rotate ended -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
 		if (getLockedCursors().contains(c)){
@@ -199,7 +188,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			InputCursor secondCursor = getFarthestFreeComponentCursorTo(firstCursor);
 
 			//See if we can obtain a lock on both cursors
-			IMTComponent3D comp = firstCursor.getFirstEvent().getTarget();
+			AbstractMTLayer<?> comp = firstCursor.getFirstEvent().getTarget();
 			RotationContext newContext = new RotationContext(firstCursor, secondCursor, comp);
 			if (!newContext.isGestureAborted()){ //Check if we could start gesture (i.e. if fingers on component)
 				rc = newContext;
@@ -244,9 +233,6 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		/** The last rotation vect. */
 		private Vector3D lastRotationVect;
 
-		/** The object. */
-		private IMTComponent3D object;
-
 		/** The rotation point. */
 		private Vector3D rotationPoint;
 
@@ -265,12 +251,12 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		 * @param rotateFingerCursor the rotate finger cursor
 		 * @param object the object
 		 */
-		public RotationContext(InputCursor pinFingerCursor, InputCursor rotateFingerCursor, IMTComponent3D object){
+		public RotationContext(InputCursor pinFingerCursor, InputCursor rotateFingerCursor, AbstractMTLayer<?> object){
 			this.pinFingerCursor = pinFingerCursor;
 			this.rotateFingerCursor = rotateFingerCursor;
 
 //			Vector3D interPoint = getIntersection(applet, object, pinFingerCursor);
-			Vector3D interPoint = getIntersection(applet, pinFingerCursor.getCurrentEvent().getCurrentTarget(), pinFingerCursor);
+			Vector3D interPoint = pinFingerCursor.getPosition();
 			if (interPoint !=null)
 				pinFingerNew = interPoint;
 			else{
@@ -281,7 +267,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 
 			//Use lastEvent when resuming with another cursor that started long ago
 //			Vector3D interPointRot = getIntersection(applet, object, rotateFingerCursor);
-			Vector3D interPointRot = getIntersection(applet, object, rotateFingerCursor);
+			Vector3D interPointRot = rotateFingerCursor.getPosition();
 
 			if (interPointRot !=null)
 				rotateFingerStart = interPointRot;
@@ -297,10 +283,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 			this.pinFingerLast	= pinFingerStart.getCopy(); 
 
 			this.rotateFingerLast	= rotateFingerStart.getCopy();
-			this.rotateFingerNew	= rotateFingerStart.getCopy();	
-
-			this.object = object;
-
+			this.rotateFingerNew	= rotateFingerStart.getCopy();
 			this.rotationPoint = pinFingerNew.getCopy();
 
 			//Get the rotation vector for reference for the next rotation
@@ -382,11 +365,7 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		 * Update rotate finger.
 		 */
 		private void updateRotateFinger(){
-			if (object == null || object.getViewingCamera() == null){ //IF component was destroyed while gesture still active
-				this.gestureAborted = true;
-				return ;
-			}
-			Vector3D newRotateFingerPos = getPlaneIntersection(applet, dragPlaneNormal, rotateFingerStart.getCopy(), rotateFingerCursor);
+			Vector3D newRotateFingerPos = rotateFingerCursor.getPosition();
 			//Update the field
 			if (newRotateFingerPos != null){
 				this.rotateFingerNew = newRotateFingerPos;
@@ -400,12 +379,8 @@ public class RotateProcessor extends AbstractCursorProcessor {
 		/**
 		 * Update pin finger.
 		 */
-		private void updatePinFinger(){  
-			if (object == null){ //IF component was destroyed while gesture still active
-				this.gestureAborted = true;
-				return;
-			}
-			Vector3D newPinFingerPos = getPlaneIntersection(applet, dragPlaneNormal, pinFingerStart.getCopy(), pinFingerCursor);
+		private void updatePinFinger(){
+			Vector3D newPinFingerPos = pinFingerCursor.getPosition();
 			
 			if (newPinFingerPos != null){
 				// Update pinfinger with new position

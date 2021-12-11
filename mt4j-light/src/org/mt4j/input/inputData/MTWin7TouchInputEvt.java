@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputData;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputSources.AbstractInputSource;
 
 /**
@@ -32,33 +31,6 @@ public class MTWin7TouchInputEvt extends MTFingerInputEvt {
 	
 	/** The contact size y. */
 	private int contactSizeY;
-
-	/**
-	 * Instantiates a new mT win7 touch input evt.
-	 *
-	 * @param source the source
-	 * @param target the target
-	 * @param positionX the position x
-	 * @param positionY the position y
-	 * @param contactSizeX the contact size x
-	 * @param contactSizeY the contact size y
-	 * @param id the id
-	 * @param c the c
-	 */
-	public MTWin7TouchInputEvt(
-			AbstractInputSource source, 
-			IMTComponent3D target, 
-			float positionX, 
-			float positionY, 
-			int contactSizeX,
-			int contactSizeY,
-			int id,
-			InputCursor c
-	) {
-		super(source, target, positionX, positionY, id, c);
-		this.contactSizeX = contactSizeX;
-		this.contactSizeY = contactSizeY;
-	}
 
 	/**
 	 * Instantiates a new mT win7 touch input evt.

@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.lassoProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -25,7 +24,7 @@ import org.mt4j.util.math.Vector3D;
  * The Interface IdragClusterable.
  * @author Christopher Ruff
  */
-public interface ILassoable extends IMTComponent3D{
+public interface ILassoable /*extends UI element*/ {
 	
 	/**
 	 * Gets the center point global.

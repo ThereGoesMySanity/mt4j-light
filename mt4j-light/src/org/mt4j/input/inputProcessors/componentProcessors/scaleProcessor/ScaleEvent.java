@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -62,7 +62,7 @@ public class ScaleEvent extends MTGestureEvent{
 	 * @param scaleFactorZ the scale factor z
 	 * @param scalingPoint the scaling point
 	 */
-	public ScaleEvent(IInputProcessor source, int id, IMTComponent3D scalingObject, InputCursor firstCursor, InputCursor secondCursor, float scaleFactorX, float scaleFactorY, float scaleFactorZ, Vector3D scalingPoint) {
+	public ScaleEvent(IInputProcessor source, int id, AbstractMTLayer<?> scalingObject, InputCursor firstCursor, InputCursor secondCursor, float scaleFactorX, float scaleFactorY, float scaleFactorZ, Vector3D scalingPoint) {
 		super(source, id, scalingObject);
 		this.firstCursor = firstCursor;
 		this.secondCursor = secondCursor;
@@ -130,8 +130,9 @@ public class ScaleEvent extends MTGestureEvent{
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString(){
-		return super.toString() + " - " + " Scaleobject:" + this.getTarget().getName() + " X-Scalefactor: " + scaleFactorX + " Y-Scalefactor:" + scaleFactorY + " Z-Scalefactor:" + scaleFactorZ + " Scalingpoint:" + scalingPoint;
+		return super.toString() + " - " + " X-Scalefactor: " + scaleFactorX + " Y-Scalefactor:" + scaleFactorY + " Z-Scalefactor:" + scaleFactorZ + " Scalingpoint:" + scalingPoint;
 	}
 
 	/**

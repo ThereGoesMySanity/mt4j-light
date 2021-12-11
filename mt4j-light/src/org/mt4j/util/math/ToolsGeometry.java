@@ -17,15 +17,8 @@
  ***********************************************************************/
 package org.mt4j.util.math;
 
-import java.nio.Buffer;
-import java.nio.IntBuffer;
-import java.nio.ShortBuffer;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.mt4j.components.visibleComponents.shapes.AbstractShape;
-import org.mt4j.components.visibleComponents.shapes.MTPolygon;
-import org.mt4j.components.visibleComponents.shapes.mesh.MTTriangleMesh;
 
 import processing.core.PApplet;
 
@@ -232,70 +225,6 @@ public class ToolsGeometry {
 
     /** The Constant tempV2b. */
     private static final Vector3D tempV2b = new Vector3D();
-
-    /**
-     * This is a <b>VERY </b> brute force method of detecting if two MTTriangleMesh
-     * objects intersect.
-     * 
-     * @param mesh1 The first TriMesh.
-     * @param mesh2 The second TriMesh.
-     * 
-     * @return True if they intersect, false otherwise.
-     */
-    public static boolean isMeshesIntersecting(MTTriangleMesh mesh1, MTTriangleMesh mesh2) {
-    	Buffer indexAA = mesh1.getGeometryInfo().getIndexBuff();
-    	Buffer indexBB = mesh2.getGeometryInfo().getIndexBuff();
-    	
-    	if (indexAA instanceof ShortBuffer && indexBB instanceof ShortBuffer) {
-			ShortBuffer indexA = (ShortBuffer) indexAA;
-			ShortBuffer indexB = (ShortBuffer) indexBB;
-			
-			//Transform the vertices of both meshes into world coordinates
-	    	Matrix aTransform = mesh1.getGlobalMatrix();
-	    	Matrix bTransform = mesh2.getGlobalMatrix();
-
-	    	Vector3D[] vertA = ToolsBuffers.getVector3DArray(mesh1.getGeometryInfo().getVertBuff());
-	    	Vector3D.transFormArrayLocal(aTransform, vertA);
-
-	    	Vector3D[] vertB = ToolsBuffers.getVector3DArray(mesh2.getGeometryInfo().getVertBuff());
-	    	Vector3D.transFormArrayLocal(bTransform, vertB);
-
-	    	for (int i = 0; i < mesh1.getTriangleCount(); i++) {
-	    		for (int j = 0; j < mesh2.getTriangleCount(); j++) {
-	    			if (isTrianglesIntersect(vertA[indexA.get(i * 3 + 0)],
-	    					vertA[indexA.get(i * 3 + 1)], vertA[indexA.get(i * 3 + 2)],
-	    					vertB[indexB.get(j * 3 + 0)], vertB[indexB.get(j * 3 + 1)],
-	    					vertB[indexB.get(j * 3 + 2)]))
-	    				return true;
-	    		}
-	    	}
-	    	return false;
-		}else{
-			IntBuffer indexA = (IntBuffer) indexAA;
-			IntBuffer indexB = (IntBuffer) indexBB;
-			
-			//Transform the vertices of both meshes into world coordinates
-	    	Matrix aTransform = mesh1.getGlobalMatrix();
-	    	Matrix bTransform = mesh2.getGlobalMatrix();
-
-	    	Vector3D[] vertA = ToolsBuffers.getVector3DArray(mesh1.getGeometryInfo().getVertBuff());
-	    	Vector3D.transFormArrayLocal(aTransform, vertA);
-
-	    	Vector3D[] vertB = ToolsBuffers.getVector3DArray(mesh2.getGeometryInfo().getVertBuff());
-	    	Vector3D.transFormArrayLocal(bTransform, vertB);
-
-	    	for (int i = 0; i < mesh1.getTriangleCount(); i++) {
-	    		for (int j = 0; j < mesh2.getTriangleCount(); j++) {
-	    			if (isTrianglesIntersect(vertA[indexA.get(i * 3 + 0)],
-	    					vertA[indexA.get(i * 3 + 1)], vertA[indexA.get(i * 3 + 2)],
-	    					vertB[indexB.get(j * 3 + 0)], vertB[indexB.get(j * 3 + 1)],
-	    					vertB[indexB.get(j * 3 + 2)]))
-	    				return true;
-	    		}
-	    	}
-	    	return false;
-		}
-    }
 
     /**
      * This method tests for the intersection between two triangles defined by
@@ -1263,66 +1192,6 @@ public class ToolsGeometry {
 	final static int AXIS_Y = 1;
 	final static int AXIS_Z = 2;
 	
-	
-	/**
-	 * Checks if is polygon axis aligned. Uses the polygons
-	 * local vertices to check.
-	 * The result is one of the values:
-	 * <br>AXIS_NONE, AXIS_X, AXIS_Y, AXIS_Z
-	 * 
-	 * @param p the p
-	 * @param epsilon the epsilon
-	 * @return the int
-	 */
-	public static int isPolygonAxisAlignedLocal (MTPolygon p, float epsilon) {
-		boolean ax = true, ay = true, az = true;
-//		float where = Float.MAX_VALUE;
-		
-		Vector3D[] vertices = p.getVerticesLocal();
-		Vector3D a = vertices[0];
-		
-		for (int i = 1 ; i < vertices.length ; i++){
-			Vector3D b = vertices[i];
-			Vector3D d = a.getSubtracted(b);
-//			Vector3D d = b.getSubtracted(a);
-			
-			if (Math.abs(d.x) > epsilon){
-				ax = false;
-				if (!ay && !az) 
-					return AXIS_NONE;
-			}
-			if (Math.abs(d.y) > epsilon){
-				ay = false;
-				if (!ax && !az) 
-					return AXIS_NONE;
-			}
-			if (Math.abs(d.z) > epsilon){
-				az = false;
-				if (!ax && !ay) 
-					return AXIS_NONE;
-			}
-		}
-		
-		if (ax) { 
-//			where = a.x; 
-//			System.out.println("Where: " + where);
-			return AXIS_X;
-		}
-		if (ay) { 
-//			where = a.y; 
-//			System.out.println("Where: " + where);
-			return AXIS_Y; 
-		}
-		if (az) { 
-//			where = a.z; 
-//			System.out.println("Where: " + where);
-			return AXIS_Z; 
-		}
-		return AXIS_NONE;
-	}
-	
-	
-	
 	/**
 	 * Calculates the distance between 2 point vectors in 3D.
 	 * 
@@ -1502,53 +1371,6 @@ public class ToolsGeometry {
         }
 		return partialPathsListCurves;
 	}
-
-
-	/**
-	 * Calculates the vertices of a quadric bezier curve defined by the
-	 * startpoint curveStartP, the controlpoint curveControlP and the end point curveEndP.<br>
-	 * The segments parameter defines the resolution of the curve.
-	 * <br>Note: This method uses only the X and Y Coordinates and generates a 2D curve!
-	 * 
-	 * @param curveStartP the curve start p
-	 * @param curveControlP the curve control p
-	 * @param curveEndP the curve end p
-	 * @param segmentDetail the segment detail
-	 * 
-	 * @return the quad bezier vertices
-	 */
-	public static Vertex[] getQuadBezierVertices(Vertex curveStartP, Vertex curveControlP, Vertex curveEndP, int segmentDetail){
-		//Change detail here
-		double segments = (double)segmentDetail;
-		double count = 0;  //used as our counter
-		double detailBias; //how many points should we put on our curve.
-
-		float x,y; //used as accumulators to make our code easier to read
-
-		//Vertex[] vertices = new Vertex[(int)segments]; //Org
-		Vertex[] vertices = new Vertex[(int)segments+1]; //FIXME TEST include start point
-		vertices[vertices.length-1] = new Vertex(curveStartP);
-
-		detailBias = 1.0 / segments; //we'll put 51 points on out curve (0.02 detail bias)
-
-		int loopCount = 0;
-		do{
-			double b1 =  count*count;
-			double b2 =	(2*count * (1-count)); 
-			double b3 = ((1-count) * (1-count));
-
-			x = (float)(curveStartP.getX()*b1 + curveControlP.getX()*b2 + curveEndP.getX()*b3);
-			y = (float)(curveStartP.getY()*b1 + curveControlP.getY()*b2 + curveEndP.getY()*b3);
-
-			vertices[loopCount] = new Vertex(x,y,0);
-
-			count += detailBias;
-			loopCount++;
-		}while( count <= 1);
-		vertices = (Vertex[]) Tools3D.reverse(vertices);
-		return vertices;
-	}
-
 
 	/**
 	 * Calculates/Interpolates the vertices of a bezier curve defined by the startpoint p,
@@ -1801,36 +1623,5 @@ public class ToolsGeometry {
 		float sgn = (u[0]*v[1] > u[1]*v[0])? 1 : -1;
 		return sgn * a;
 	}
-
-
-
-	/**
-	 * Calculates the 2D XY convex hull for this shape.
-	 * 
-	 * @return the convex hull xy global
-	 */
-	public Vector3D[] getConvexHullXYGlobal(AbstractShape shape){
-		ArrayList<Vector3D> vers = new ArrayList<Vector3D>();
-		Vertex[] transVerts = shape.getVerticesGlobal();
-        for (Vertex vertex : transVerts) {
-            vers.add(vertex);
-        }
-		ArrayList<Vector3D> edgeList = ConvexQuickHull2D.getConvexHull2D(vers);
-		return (edgeList.toArray(new Vector3D[edgeList.size()]));
-	}
-	
-	/**
-	 * @param vects The Vector3D[] to be converted to a Vertex[]
-	 * @return a Vertex[] created from the given Vector3D[]
-	 */
-	public static Vertex[] toVertices(Vector3D[] vects){
-		Vertex[] result = new Vertex[vects.length];
-		int length = result.length;
-		for (int i = 0; i < length; i++) {
-			result[i] = new Vertex(vects[i]);
-		}
-		return result;
-	}
-
 }
 

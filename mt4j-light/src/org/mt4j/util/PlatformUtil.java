@@ -1,7 +1,5 @@
 package org.mt4j.util;
 
-import org.mt4j.util.opengl.IGLU;
-
 import processing.core.PGraphics;
 import processing.core.PMatrix3D;
 
@@ -56,11 +54,6 @@ public class PlatformUtil {
 	
 	public static boolean isNPOTTextureSupported(){
 		return graphicsUtil.isNPOTTextureSupported();
-	}
-
-		
-	public static IGLU getGLU(){
-		return graphicsUtil.getGLU();
 	}
 
 	public static PMatrix3D getProjection() {

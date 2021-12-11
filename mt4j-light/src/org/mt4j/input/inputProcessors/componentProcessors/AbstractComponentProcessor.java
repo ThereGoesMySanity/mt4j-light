@@ -78,6 +78,7 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.IMTInputEventListener#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
 	 */
+	@Override
 	public boolean processInputEvent(MTInputEvent inEvt){
 //	public void processInputEvent(MTInputEvent inEvt){
 		if(!disabled && inEvt.hasTarget()){ //Allow component processors to recieve inputevts only if they have a target (Canvas is target if null is picked..)
@@ -161,6 +162,7 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	 * 
 	 * @return true, if is disabled
 	 */
+	@Override
 	public boolean isDisabled() {
 		return disabled;
 	}
@@ -170,6 +172,7 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	 * 
 	 * @param disabled the new disabled
 	 */
+	@Override
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
@@ -249,6 +252,7 @@ public abstract class AbstractComponentProcessor implements IMTInputEventListene
 	
 	
 	
+	@Override
 	public int compareTo(AbstractComponentProcessor o) {
 		return -1;
 	}

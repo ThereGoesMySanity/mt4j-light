@@ -17,7 +17,6 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.dragProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -26,23 +25,17 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProce
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Vector3D;
 
-import processing.core.PApplet;
-
 /**
  * The Class DragProcessor. For multi touch drag behaviour on components.
  * Fires DragEvent gesture events.
  * @author Christopher Ruff
  */
 public class DragProcessor extends AbstractCursorProcessor {
-	
-	/** The applet. */
-	private PApplet applet;
-	
 	/** The dc. */
 	private DragContext dc;
 	
-	public DragProcessor(PApplet graphicsContext){
-		this(graphicsContext, false);
+	public DragProcessor(){
+		this(false);
 	}
 
 	/**
@@ -50,9 +43,8 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @param graphicsContext the graphics context
 	 */
-	public DragProcessor(PApplet graphicsContext, boolean stopEventPropagation){
+	public DragProcessor(boolean stopEventPropagation){
 		super(stopEventPropagation);
-		this.applet = graphicsContext;
 		this.setLockPriority(1);
 		this.setDebug(false);
 //		logger.setLevel(Level.DEBUG);
@@ -64,11 +56,10 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorStarted(InputCursor cursor, AbstractCursorInputEvt fe) {
-		IMTComponent3D comp = fe.getTarget();
 		InputCursor[] theLockedCursors = getLockedCursorsArray();
 		//if gesture isnt started and no other cursor on comp is locked by higher priority gesture -> start gesture
 		if (theLockedCursors.length == 0 && this.canLock(getCurrentComponentCursorsArray())){ 
-			dc = new DragContext(cursor, comp); 
+			dc = new DragContext(cursor); 
 			if (!dc.isGestureAborted()){ //See if the drag couldnt start (i.e. cursor doesent hit component anymore etc)
 				//Lock this cursor with our priority
 				this.getLock(cursor);
@@ -98,7 +89,6 @@ public class DragProcessor extends AbstractCursorProcessor {
 	 */
 	@Override
 	public void cursorEnded(InputCursor c, AbstractCursorInputEvt fe) {
-		IMTComponent3D comp = fe.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED RECIEVED - CURSOR: " + c.getId());
 		if (getLockedCursors().contains(c)){ //cursors was a actual gesture cursors
 			dc.updateDragPosition();
@@ -106,7 +96,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 			InputCursor[] availableCursors = getFreeComponentCursorsArray();
 			if (availableCursors.length > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
 				InputCursor otherCursor = availableCursors[0]; 
-				DragContext newContext = new DragContext(otherCursor, comp); 
+				DragContext newContext = new DragContext(otherCursor); 
 				if (!newContext.isGestureAborted()){
 					dc = newContext;
 					this.getLock(otherCursor);
@@ -152,7 +142,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 		}
 
 		if (getFreeComponentCursors().size() > 0 && this.canLock(getCurrentComponentCursorsArray())){ 
-			DragContext newContext = new DragContext(c, c.getTarget());
+			DragContext newContext = new DragContext(c);
 			if (!newContext.isGestureAborted()){
 				dc = newContext;
 				this.getLock(c);
@@ -181,37 +171,25 @@ public class DragProcessor extends AbstractCursorProcessor {
 				/** The new position. */
 				private Vector3D newPosition;
 				
-				/** The drag object. */
-				private IMTComponent3D dragObject;
-				
 				/** The m. */
 				private InputCursor m; 
 				
 				/** The gesture aborted. */
 				private boolean gestureAborted;
-				
-				/** The drag plane normal. */
-				private Vector3D dragPlaneNormal;
 
 				
 				/**
 				 * Instantiates a new drag context.
 				 * 
 				 * @param c the cursor
-				 * @param dragObject the drag object
+				 * @param dragLayer the drag object
 				 */
-				public DragContext(InputCursor c, IMTComponent3D dragObject_){	
-					this.dragObject = dragObject_;
+				public DragContext(InputCursor c){
 					this.m = c;
 					gestureAborted = false;
 					
-					this.dragObject = c.getCurrentEvent().getCurrentTarget();
-					
-					//Calculate the normal of the plane we will be dragging at (useful if camera isnt default)
-					this.dragPlaneNormal =  dragObject.getViewingCamera().getPosition().getSubtracted(dragObject.getViewingCamera().getViewCenterPos()).normalizeLocal();
-					
 					//Set the Drag Startposition
-					Vector3D interSectP = getIntersection(applet, dragObject, c);
+					Vector3D interSectP = c.getPosition();
 					
 					if (interSectP != null)
 						this.startPosition = interSectP;
@@ -229,11 +207,7 @@ public class DragProcessor extends AbstractCursorProcessor {
 				}
 				
 				public void updateDragPosition(){
-					if (dragObject == null || dragObject.getViewingCamera() == null){ //IF component was destroyed while gesture still active
-						this.gestureAborted = true;
-						return ;
-					}
-					Vector3D newPos = getPlaneIntersection(applet, dragPlaneNormal, startPosition, m);
+					Vector3D newPos = m.getPosition();
 					if (newPos != null){
 						lastPosition = newPosition;
 						newPosition = newPos;

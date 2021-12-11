@@ -17,11 +17,10 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
-import org.mt4j.util.camera.Icamera;
 
 
 /**
@@ -39,9 +38,6 @@ public class ZoomEvent extends MTGestureEvent {
 	/** The cam zoom amount. */
 	private float camZoomAmount;
 	
-	/** The camera. */
-	private Icamera camera;
-
 	/**
 	 * Instantiates a new zoom event.
 	 * 
@@ -53,12 +49,11 @@ public class ZoomEvent extends MTGestureEvent {
 	 * @param camZoomAmount the cam zoom amount
 	 * @param camera the camera
 	 */
-	public ZoomEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor firstCursor, InputCursor secondCursor, float camZoomAmount, Icamera camera) {
+	public ZoomEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstCursor, InputCursor secondCursor, float camZoomAmount) {
 		super(source, id, targetComponent);
 		this.firstCursor = firstCursor;
 		this.secondCursor = secondCursor;
 		this.camZoomAmount = camZoomAmount;
-		this.camera = camera;
 	}
 
 	/**
@@ -87,16 +82,4 @@ public class ZoomEvent extends MTGestureEvent {
 	public InputCursor getSecondCursor() {
 		return secondCursor;
 	}
-
-	/**
-	 * Gets the camera.
-	 * 
-	 * @return the camera
-	 */
-	public Icamera getCamera() {
-		return camera;
-	}
-
-	
-	
 }

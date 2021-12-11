@@ -17,10 +17,9 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.panProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
-import org.mt4j.util.camera.Icamera;
 import org.mt4j.util.math.Vector3D;
 
 
@@ -44,8 +43,8 @@ public class PanTwoFingerEvent extends PanEvent {
 	 * @param translationVector the translation vector
 	 * @param camera the camera
 	 */
-	public PanTwoFingerEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor firstFinger, InputCursor secondFinger, Vector3D translationVector, Icamera camera) {
-		super(source, id, targetComponent, firstFinger, translationVector, camera);
+	public PanTwoFingerEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFinger, InputCursor secondFinger, Vector3D translationVector) {
+		super(source, id, targetComponent, firstFinger, translationVector);
 		this.secondFinger = secondFinger;
 	}
 
@@ -57,7 +56,4 @@ public class PanTwoFingerEvent extends PanEvent {
 	public InputCursor getSecondCursor() {
 		return secondFinger;
 	}
-	
-	
-
 }

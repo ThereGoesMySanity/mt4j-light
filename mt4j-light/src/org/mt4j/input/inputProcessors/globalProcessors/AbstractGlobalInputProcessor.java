@@ -20,18 +20,12 @@ package org.mt4j.input.inputProcessors.globalProcessors;
 
 import java.util.ArrayList;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
 import org.mt4j.input.IMTInputEventListener;
-import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.input.inputProcessors.GestureUtils;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputSources.IinputSourceListener;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
-import org.mt4j.util.math.Vector3D;
-
-import processing.core.PApplet;
 
 
 /**
@@ -63,6 +57,7 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	/* (non-Javadoc)
 	 * @see org.mt4j.input.inputSources.IinputSourceListener#processInputEvent(org.mt4j.input.test.MTInputEvent)
 	 */
+	@Override
 	final public boolean processInputEvent(MTInputEvent inputEvent){
 		this.processInputEvtImpl(inputEvent);
 		return true;
@@ -82,6 +77,7 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	 * 
 	 * @return true, if is disabled
 	 */
+	@Override
 	public boolean isDisabled() {
 		return disabled;
 	}
@@ -91,6 +87,7 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 	 * 
 	 * @param disabled the new disabled
 	 */
+	@Override
 	public void setDisabled(boolean disabled) {
 		this.disabled = disabled;
 	}
@@ -138,38 +135,4 @@ public abstract class AbstractGlobalInputProcessor implements IinputSourceListen
 			listener.processInputEvent(ie);
 		}
 	}
-	
-	////
-	/**
-	 * Gets the intersection point of a cursor and a specified component.
-	 * Can return null if the cursor doesent intersect the component.
-	 *
-	 * @param app the app
-	 * @param c the c
-	 * @return the intersection
-	 */
-	public Vector3D getIntersection(PApplet app, InputCursor c){
-		return GestureUtils.getIntersection(app, c.getTarget(), c);
-	}
-	
-	/**
-	 * Gets the intersection point of a cursor and a specified component.
-	 * Can return null if the cursor doesent intersect the component.
-	 *
-	 * @param app the app
-	 * @param component the component
-	 * @param c the c
-	 * @return the intersection
-	 */
-	public Vector3D getIntersection(PApplet app, IMTComponent3D component, InputCursor c){
-		return GestureUtils.getIntersection(app, component, c);
-	}
-	
-	public Vector3D getPlaneIntersection(PApplet app, Vector3D planeNormal, Vector3D pointInPlane, InputCursor c){
-		return GestureUtils.getPlaneIntersection(app, planeNormal, pointInPlane, c);
-	}
-	///////////
-	
-
-	
 }

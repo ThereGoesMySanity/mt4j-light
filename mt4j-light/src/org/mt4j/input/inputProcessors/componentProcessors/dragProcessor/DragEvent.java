@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.dragProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -53,7 +53,7 @@ public class DragEvent extends MTGestureEvent {
 	 * @param from the from
 	 * @param to the to
 	 */
-	public DragEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor dragCursor, Vector3D from, Vector3D to) {
+	public DragEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor dragCursor, Vector3D from, Vector3D to) {
 		super(source, id, targetComponent);
 		this.dragCursor = dragCursor;
 		this.from = from;

@@ -17,16 +17,10 @@
  ***********************************************************************/
 package org.mt4j.util.camera;
 
-import javax.media.opengl.GL2;
-
-import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.Plane;
-import org.mt4j.util.math.Tools3D;
 import org.mt4j.util.math.ToolsMath;
 import org.mt4j.util.math.Vector3D;
-
-import processing.core.PApplet;
 
 /**
  * The Class Frustum. Represents a camera frustum.
@@ -40,8 +34,6 @@ public class Frustum implements IFrustum{
 	private float angle;
 	private float nearD;
 	private float farD;
-	
-	private GL2 gl;
 	
 	private Vector3D _tmpVec3 = new Vector3D();
 	private Vector3D _tmpVec2 = new Vector3D();
@@ -90,12 +82,7 @@ public class Frustum implements IFrustum{
 	 * 
 	 * @param pa the pa
 	 */
-	public Frustum(PApplet pa){
-		if (MT4jSettings.getInstance().isOpenGlMode()){
-//			this.gl = ((PGraphicsOpenGL)pa.g).gl;
-			this.gl = Tools3D.getGL(pa);
-		}
-		
+	public Frustum(){
 		
 		camPos = new Vector3D();
 		Z = new Vector3D();
@@ -287,6 +274,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	/* (non-Javadoc)
 	 * @see util.camera.IFrustum#isPointInFrustum(util.math.Vector3D)
 	 */
+	@Override
 	public int isPointInFrustum(Vector3D p) {
 		float pcz,pcx,pcy,aux;
 
@@ -349,6 +337,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	/* (non-Javadoc)
 	 * @see util.camera.IFrustum#isSphereInFrustum(util.math.Vector3D, float)
 	 */
+	@Override
 	public int isSphereInFrustum(Vector3D p, float radius) {
 //		float d1,d2;
 //		float az,ax,ay,zz1,zz2;
@@ -597,6 +586,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the height of the plane at a specific z value
 	 * @return the float
 	 */
+	@Override
 	public float getHeightOfPlane(float z)
 	{
 		
@@ -618,6 +608,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the width of the plane at a specific z value
 	 * @return the float
 	 */
+	@Override
 	public float getWidthOfPlane(float z)
 	{
 		
@@ -637,6 +628,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the height of the near plane
 	 * @return the float
 	 */
+	@Override
 	public float getHeightOfNearPlane() {
 		return Math.abs(ntl.y - nbl.y);
 	}
@@ -645,6 +637,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the width of the near plane
 	 * @return the float
 	 */
+	@Override
 	public float getWidthOfNearPlane() {
 		  return Math.abs(ntl.x - ntr.x);
 	}
@@ -653,6 +646,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the top left point of the near plane
 	 * @return the Vector3D
 	 */
+	@Override
 	public Vector3D getNearTopLeft() {
 		return ntl.getCopy();
 	}
@@ -662,6 +656,7 @@ public void setCamDef(Vector3D camPos, Vector3D viewCenterPos, float xUp, float 
 	 * Returns the z value of the near plane
 	 * @return the float
 	 */
+	@Override
 	public float getZValueOfNearPlane()
 	{
 		return ntl.getZ();

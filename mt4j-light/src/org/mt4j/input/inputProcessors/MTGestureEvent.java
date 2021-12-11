@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.MTInputEvent;
 
 
@@ -65,7 +65,7 @@ public abstract class MTGestureEvent extends MTInputEvent {
 	 * @param id the id
 	 * @param targetComponent the target component
 	 */
-	public MTGestureEvent(IInputProcessor source, int id, IMTComponent3D targetComponent) {
+	public MTGestureEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent) {
 		super(source, targetComponent, false);
 		this.id = id;
 		this.setCurrentTarget(targetComponent); //test ..

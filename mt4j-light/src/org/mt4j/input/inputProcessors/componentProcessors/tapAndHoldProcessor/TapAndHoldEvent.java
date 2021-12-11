@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.tapAndHoldProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -53,7 +53,7 @@ public class TapAndHoldEvent extends MTGestureEvent {
 	 * @param m the m
 	 * @param clickPoint the click point
 	 */
-	public TapAndHoldEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor m, boolean holdComplete, Vector3D clickPoint, int holdTime, float elapsedTime, float elapsedTimeNormalized) {
+	public TapAndHoldEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor m, boolean holdComplete, Vector3D clickPoint, int holdTime, float elapsedTime, float elapsedTimeNormalized) {
 		super(source, id, targetComponent);
 		this.cursor = m;
 		this.holdComplete = holdComplete;

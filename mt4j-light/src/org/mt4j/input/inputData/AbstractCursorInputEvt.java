@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputData;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputSources.AbstractInputSource;
 import org.mt4j.util.math.Vector3D;
 
@@ -81,27 +81,6 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 		this.associatedCursor = c;
 	}
 	
-	/**
-	 * Instantiates a new touch event.
-	 * 
-	 * @param source the source
-	 * @param positionX the position x
-	 * @param positionY the position y
-	 * @param id the id
-	 * @param m the m
-	 * @param target the target
-	 */
-	public AbstractCursorInputEvt(AbstractInputSource source, IMTComponent3D target, float positionX, float positionY, int id, InputCursor m) {
-		super(source, target); 
-		this.id = id;
-		
-		this.positionX = positionX;
-		this.positionY = positionY;
-		
-		this.associatedCursor = m;
-	}
-	
-	
 	public void setId(int id){
 		this.id = id;
 	}
@@ -122,7 +101,6 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 		this.associatedCursor = associatedcursor;
 	}
 		
-
 	/**
 	 * This method should be called before firing this event to the global input processors.
 	 * Here, the event is added to its cursor.
@@ -135,28 +113,6 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 		}else{
 //			System.out.println("couldnt add event to cursor - cursor null");
 		}
-	}
-
-	
-	/**
-	 * Gets the position x.
-	 * 
-	 * @return the position x
-	 * @deprecated use getScreenX()
-	 */
-	public float getPosX() {
-		return positionX;
-	}
-
-	
-	/**
-	 * Gets the position y.
-	 * 
-	 * @return the position y
-	 * @deprecated use getScreenY()
-	 */
-	public float getPosY() {
-		return positionY;
 	}
 	
 	public float getX(){
@@ -199,6 +155,7 @@ public abstract class AbstractCursorInputEvt extends MTInputEvent {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString(){
 		return super.toString() + "; " + " PosX: " + positionX + " PosY: " + positionY + " InputSource: " + this.getSource(); 
 	}

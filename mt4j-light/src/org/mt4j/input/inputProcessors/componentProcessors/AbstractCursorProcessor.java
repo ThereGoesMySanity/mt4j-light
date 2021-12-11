@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
@@ -103,7 +103,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			
 			//so we can use getCurrentTarget() in the processor's method
 			//because  the current target may have changed through bubbling
-			IMTComponent3D saved = inputCursor.getCurrentTarget(); //FIXME Hack
+			AbstractMTLayer<?> saved = inputCursor.getCurrentTarget(); //FIXME Hack
 			inputCursor.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack
 			
 			this.cursorLocked(inputCursor, ip);
@@ -121,7 +121,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 				logger.warn(this + ": Unlocking already ENDED input event");
 			}
 			
-			IMTComponent3D saved = cursorUnlocked.getCurrentTarget(); //FIXME Hack
+			AbstractMTLayer<?> saved = cursorUnlocked.getCurrentTarget(); //FIXME Hack
 			cursorUnlocked.getCurrentEvent().setCurrentTarget(inputEvent.getCurrentTarget()); //FIXME Hack
 			
 			this.cursorUnlocked(cursorUnlocked);
@@ -129,7 +129,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			cursorUnlocked.getCurrentEvent().setCurrentTarget(saved); //FIXME Hack
 		}
 		////////////////////////////
-		
+		System.out.println(posEvt.getId() + " " + activeCursors.size());
 		switch (posEvt.getId()) {
 		case AbstractCursorInputEvt.INPUT_STARTED:
 //			activeCursors.add(c);
@@ -430,24 +430,7 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 	 * @return the intersection
 	 */
 	public Vector3D getIntersection(PApplet app, InputCursor c){
-		return GestureUtils.getIntersection(app, c.getTarget(), c);
-	}
-	
-	/**
-	 * Gets the intersection point of a cursor and a specified component.
-	 * Can return null if the cursor doesent intersect the component.
-	 *
-	 * @param app the app
-	 * @param component the component
-	 * @param c the c
-	 * @return the intersection
-	 */
-	public Vector3D getIntersection(PApplet app, IMTComponent3D component, InputCursor c){
-		return GestureUtils.getIntersection(app, component, c);
-	}
-	
-	public Vector3D getPlaneIntersection(PApplet app, Vector3D planeNormal, Vector3D pointInPlane, InputCursor c){
-		return GestureUtils.getPlaneIntersection(app, planeNormal, pointInPlane, c);
+		return c.getPosition();
 	}
 	///////////////////////////////////////////////////////
 	

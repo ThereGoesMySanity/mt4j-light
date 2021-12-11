@@ -17,18 +17,19 @@
  ***********************************************************************/
 package org.mt4j.input.inputSources;
 
+import java.awt.Window;
 import java.util.HashMap;
-
-import javax.swing.SwingUtilities;
 
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputData.MTWin7TouchInputEvt;
-import org.mt4j.util.MT4jSettings;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
+
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
 
 /**
  * Input source for native Windows 7 WM_TOUCH messages for single/multi-touch.
@@ -69,9 +70,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	private static final String canvasClassName = "SunAwtCanvas";
 	
 	
-	// NATIVE METHODS //
-	private native int findWindow(String tmpTitle, String subWindowTitle);
-	
+	// NATIVE METHODS //	
 	private native boolean init(long HWND); 
 	
 	private native boolean getSystemMetrics(); 
@@ -111,7 +110,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		
 		if (!loaded){
 			loaded = true;
-			String dllName = (MT4jSettings.getInstance().getArchitecture() == MT4jSettings.ARCHITECTURE_32_BIT)? dllName32 : dllName64;
+			String dllName = (Platform.is64Bit())? dllName64 : dllName32;
 			System.loadLibrary(dllName);
 //			System.load(System.getProperty("user.dir") + File.separator + dllName + ".dll");
 		}else{
@@ -142,6 +141,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		success = true;
 		
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
 			public void run() {
 				if (isSuccessfullySetup()){
 					logger.debug("Cleaning up Win7 touch source..");
@@ -225,36 +225,19 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	
 	
 	private void getNativeWindowHandles(){
-		if (app.frame == null){
-			logger.error("applet.frame == null! -> cant set up windows 7 input!");
+		if (app.getWindow() == null){
+			logger.error("window == null! -> cant set up windows 7 input!");
 			return;
 		}
-		
-		//TODO kind of hacky way of getting the HWND..but there seems to be no real alternative(?)
-		final String oldTitle = app.frame.getTitle();
-		final String tmpTitle = "Initializing Native Windows 7 Touch Input " + Math.random();
-		app.frame.setTitle(tmpTitle);
-		logger.debug("Temp title: " + tmpTitle);
-		
-		//FIXME TEST REMOVE
-		//Window window = SwingUtilities.getWindowAncestor(app);
-//		AWTUtilities.setWindowOpacity(window, 0.5f); //works!
-				
-		//Invokelater because of some crash issue 
-		//-> maybe we need to wait a frame until windows is informed of the window name change
-		SwingUtilities.invokeLater(new Runnable() { 
-			public void run() {
-				int awtCanvasHandle = 0;
-				try {
-//					//TODO also search for window class?
-					awtCanvasHandle = (int)findWindow(tmpTitle, canvasClassName);
-					setSunAwtCanvasHandle(awtCanvasHandle);
-				} catch (Exception e) {
-					System.err.println(e.getMessage());
-				}
-				app.frame.setTitle(oldTitle); //Reset title text
-			}
-		});
+
+		Window window = app.getWindow();
+		int awtCanvasHandle = 0;
+		try {
+			awtCanvasHandle = (int)Native.getWindowID(window);
+			setSunAwtCanvasHandle(awtCanvasHandle);
+		} catch (Exception e) {
+			System.err.println(e.getMessage());
+		}
 	}
 
 	

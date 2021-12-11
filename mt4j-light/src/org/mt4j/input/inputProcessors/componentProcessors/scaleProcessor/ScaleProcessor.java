@@ -19,7 +19,7 @@ package org.mt4j.input.inputProcessors.componentProcessors.scaleProcessor;
 
 import java.util.List;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
@@ -28,8 +28,6 @@ import org.mt4j.input.inputProcessors.componentProcessors.AbstractComponentProce
 import org.mt4j.input.inputProcessors.componentProcessors.AbstractCursorProcessor;
 import org.mt4j.util.math.Vector3D;
 
-import processing.core.PApplet;
-
 /**
  * The Class ScaleProcessor. 2-Finger Scale multi-touch gesture.
  * Fires ScaleEvent gesture events.
@@ -37,14 +35,11 @@ import processing.core.PApplet;
  */
 public class ScaleProcessor extends AbstractCursorProcessor {
 	
-	/** The applet. */
-	private PApplet applet;
-	
 	/** The scale context. */
 	private ScaleContext sc;
 	
-	public ScaleProcessor(PApplet graphicsContext){
-		this(graphicsContext, false);
+	public ScaleProcessor(){
+		this(false);
 	}
 	
 	/**
@@ -52,9 +47,8 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	 * 
 	 * @param graphicsContext the graphics context
 	 */
-	public ScaleProcessor(PApplet graphicsContext, boolean stopPropagation){
+	public ScaleProcessor(boolean stopPropagation){
 		super(stopPropagation);
-		this.applet = graphicsContext;
 		this.setLockPriority(2);
 	}
 	
@@ -62,7 +56,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 
 	@Override
 	public void cursorStarted(InputCursor newCursor, AbstractCursorInputEvt fEvt) {
-		IMTComponent3D comp = fEvt.getTarget();
+		AbstractMTLayer<?> comp = fEvt.getTarget();
 		logger.debug(this.getName() + " INPUT_STARTED, Cursor: " + newCursor.getId());
 		
 		List<InputCursor> alreadyLockedCursors = getLockedCursors();
@@ -129,7 +123,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 	
 	@Override
 	public void cursorEnded(InputCursor c, AbstractCursorInputEvt fEvt) {
-		IMTComponent3D comp = fEvt.getTarget();
+		AbstractMTLayer<?> comp = fEvt.getTarget();
 		logger.debug(this.getName() + " INPUT_ENDED -> Active cursors: " + getCurrentComponentCursors().size() + " Available cursors: " + getFreeComponentCursors().size() +  " Locked cursors: " + getLockedCursors().size());
 		if (getLockedCursors().contains(c)){
 			InputCursor firstCursor = sc.getFirstFingerCursor();
@@ -199,7 +193,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 			InputCursor secondCursor = getFarthestFreeComponentCursorTo(firstCursor);
 
 			//See if we can obtain a lock on both cursors
-			IMTComponent3D comp = firstCursor.getFirstEvent().getTarget();
+			AbstractMTLayer<?> comp = firstCursor.getFirstEvent().getTarget();
 			ScaleContext newContext = new ScaleContext(firstCursor, secondCursor, comp);
 			if (!newContext.isGestureAborted()){ //Check if we could start gesture (ie. if fingers on component)
 				sc = newContext;
@@ -229,26 +223,14 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		/** The second finger cursor. */
 		private InputCursor secondFingerCursor; 
 		
-		/** The object. */
-		private IMTComponent3D object;
-		
 		/** The first finger new pos. */
 		private Vector3D firstFingerNewPos;
 		
 		/** The second finger new pos. */
 		private Vector3D secondFingerNewPos;
 		
-		/** The second finger start pos. */
-		private Vector3D secondFingerStartPos;
-		
 		/** The last scale distance. */
 		private float lastScaleDistance;
-		
-		/** The scale plane normal. */
-		private Vector3D scalePlaneNormal;
-		
-		/** The first finger start pos. */
-		private Vector3D firstFingerStartPos;
 
 		private boolean gestureAborted;
 		
@@ -260,14 +242,13 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		 * @param secondFingerCursor the second finger cursor
 		 * @param object the object
 		 */
-		public ScaleContext(InputCursor firstFingerCursor, InputCursor secondFingerCursor, IMTComponent3D object) {
+		public ScaleContext(InputCursor firstFingerCursor, InputCursor secondFingerCursor, AbstractMTLayer<?> object) {
 			super();
 			this.firstFingerCursor = firstFingerCursor;
 			this.secondFingerCursor = secondFingerCursor;
-			this.object = object;
 			
 			//irgendwo vorher checken ob der 1. finger �berhaupt noch �ber dem obj ist? ist nur sicher der fall wenn mit 1 finger gedraggt wird..
-			Vector3D interPoint = getIntersection(applet, object, firstFingerCursor);
+			Vector3D interPoint = firstFingerCursor.getPosition();
 			if (interPoint !=null)
 				firstFingerNewPos = interPoint;
 			else{
@@ -276,7 +257,7 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 				gestureAborted = true;
 			}
 			
-			Vector3D scndInterPoint = getIntersection(applet, object, secondFingerCursor);
+			Vector3D scndInterPoint = secondFingerCursor.getPosition();
 			if (scndInterPoint !=null)
 				secondFingerNewPos = scndInterPoint;
 			else{
@@ -285,16 +266,11 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 				gestureAborted = true;
 			}
 			
-			firstFingerStartPos = firstFingerNewPos.getCopy();
-			secondFingerStartPos = secondFingerNewPos.getCopy();
-			
 			this.lastScaleDistance = Vector3D.distance(firstFingerNewPos, secondFingerNewPos);
 			 //Prevent scaling to 0 if both fingers are on the same position at scalstart
 			if (lastScaleDistance == 0.0)
 				lastScaleDistance = 1.0f;
 			
-			//TODO settable? get from objects? camera orthogonal?
-			scalePlaneNormal = new Vector3D(0,0,1);
 			/*
 			newFingerMiddlePos = getMiddlePointBetweenFingers();
 			oldFingerMiddlePos = newFingerMiddlePos.getCopy();
@@ -332,24 +308,15 @@ public class ScaleProcessor extends AbstractCursorProcessor {
 		 * @return the updated scale factor
 		 */
 		public float getUpdatedScaleFactor(InputCursor m){
-			if (object == null || object.getViewingCamera() == null){ //IF component was destroyed while gesture still active
-				this.gestureAborted = true;
-				return 1;
-			}
-			
-			//FIXME REMOVE!!
-//			scalePlaneNormal = ((MTPolygon)object).getNormal();
-//			logger.debug("scalePlaneNormal: " + scalePlaneNormal);
-//			/*
 			if (m.equals(firstFingerCursor)){ ///FIRST FINGER MOVED!
-				Vector3D newFirstFingerPos = getPlaneIntersection(applet, scalePlaneNormal, firstFingerStartPos.getCopy(), firstFingerCursor);
+				Vector3D newFirstFingerPos = firstFingerCursor.getPosition();
 				
 				//Update the field
 				if (newFirstFingerPos != null)
 					this.firstFingerNewPos = newFirstFingerPos;
 			
 			}else if (m.equals(secondFingerCursor)){ ///SECOND FINGER MOVED!
-				Vector3D newSecondFingerPos = getPlaneIntersection(applet, scalePlaneNormal, secondFingerStartPos.getCopy(), secondFingerCursor);
+				Vector3D newSecondFingerPos = secondFingerCursor.getPosition();
 				
 //				//TODO dragplane aus den beiden fingern ableiten -> wenn obj schr�g im raum, dragplane entsprechend
 //				Vector3D newSecondFingerPos = ToolsIntersection.getRayPlaneIntersection(new Ray(rayStartPoint, newPointInRayDir), scalePlaneNormal, secondFingerStartPos.getCopy());

@@ -17,24 +17,21 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.globalProcessors;
 
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.RectangularShape;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.components.MTComponent;
-import org.mt4j.components.bounds.IBoundingShape;
-import org.mt4j.components.visibleComponents.shapes.AbstractShape;
-import org.mt4j.components.visibleComponents.shapes.MTEllipse;
-import org.mt4j.components.visibleComponents.widgets.MTOverlayContainer;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.AbstractCursorInputEvt;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.sceneManagement.Iscene;
-import org.mt4j.util.MTColor;
 import org.mt4j.util.PlatformUtil;
 import org.mt4j.util.math.Vector3D;
-
-import processing.core.PApplet;
 
 /**
  * The Class CursorTracer. A global input processor tracking all AbstractCursorInputEvt events and
@@ -48,13 +45,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	private AbstractMTApplication app;
 	
 	/** The cursor id to display shape. */
-	private Map<InputCursor, AbstractShape>cursorIDToDisplayShape;
-	
-	/** The scene. */
-	private Iscene scene;
-	
-	/** The overlay group. */
-	private MTComponent overlayGroup;
+	private Map<InputCursor, RectangularShape> cursorIDToDisplayShape;
 	
 	private float ellipseRadius = 15;
 
@@ -65,10 +56,9 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * @param mtApp the mt app
 	 * @param currentScene the current scene
 	 */
-	public CursorTracer(AbstractMTApplication mtApp, Iscene currentScene){
+	public CursorTracer(AbstractMTApplication mtApp){
 		this.app = mtApp;
-		this.scene = currentScene;
-		this.cursorIDToDisplayShape = new HashMap<InputCursor, AbstractShape>();
+		this.cursorIDToDisplayShape = new HashMap<InputCursor, RectangularShape>();
 		
 		if (PlatformUtil.isAndroid()){
 			ellipseRadius = 30;
@@ -101,12 +91,6 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 		
 //		MTOverlayContainer overlay = checkForExistingOverlay(scene.getCanvas());
 //		
-		this.overlayGroup = new MTOverlayContainer(app, "Cursor Trace group");
-		mtApp.invokeLater(new Runnable() {
-			public void run() {
-				scene.getCanvas().addChild(overlayGroup);
-			}
-		});
 		
 //		//FIXME REMOVE
 //		compToCreationTime = new HashMap<MTComponent, Long>();
@@ -149,30 +133,12 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * 
 	 * @return the abstract shape
 	 */
-	protected AbstractShape createDisplayComponent(PApplet applet, Vector3D position){
-		MTEllipse displayShape = new CursorEllipse(applet, position, ellipseRadius, 15);
-		displayShape.setPickable(false);
-		displayShape.setNoFill(true);
-		displayShape.setDrawSmooth(true);
-		displayShape.setStrokeWeight(2);
-		displayShape.setStrokeColor(new MTColor(100, 130, 220, 255));
-		return displayShape;
+	protected void drawDisplayComponent(Graphics2D g, RectangularShape displayShape, Vector3D position){
+		g.setStroke(new BasicStroke(2));
+		g.setColor(new Color(100, 130, 220, 255));
+		displayShape.setFrameFromCenter(position.x, position.y, position.x + ellipseRadius, position.y + ellipseRadius);
+		g.draw(displayShape);
 	}
-	
-	private class CursorEllipse extends MTEllipse{
-		public CursorEllipse(PApplet applet, Vector3D centerPoint,float radiusX, int segments) {
-			super(applet, centerPoint, radiusX, radiusX, segments);
-		}
-		@Override
-		protected IBoundingShape computeDefaultBounds() {
-			return null;
-		}
-		@Override
-		protected void setDefaultGestureActions() {
-			//Dont need gestures
-		}
-	}
-	
 	
 
 	/* (non-Javadoc)
@@ -182,34 +148,30 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	public void processInputEvtImpl(MTInputEvent inputEvent) {
 		if (inputEvent instanceof AbstractCursorInputEvt) {
 			AbstractCursorInputEvt cursorEvt = (AbstractCursorInputEvt)inputEvent;
-			InputCursor c = ((AbstractCursorInputEvt)inputEvent).getCursor();
+			InputCursor c = cursorEvt.getCursor();
 			Vector3D position = new Vector3D(cursorEvt.getX(), cursorEvt.getY());
+			
+			AbstractMTLayer<?> layer = (AbstractMTLayer<?>)c.getTarget();
+			Graphics2D graphics = layer.getGraphics();
 
-			AbstractShape displayShape = null;
+			RectangularShape displayShape = null;
 			switch (cursorEvt.getId()) {
 			case AbstractCursorInputEvt.INPUT_STARTED:
-				displayShape = createDisplayComponent(app, position);
+				displayShape = new Ellipse2D.Double();
 				cursorIDToDisplayShape.put(c, displayShape);
-				overlayGroup.addChild(displayShape);
-				displayShape.setPositionGlobal(position);
 				
-//				compToCreationTime.put(displayShape, System.currentTimeMillis()); //FIXME REMOVE
-//				displayShape.setUserData("Cursor", c);//FIXME REMOVE
 				break;
 			case AbstractCursorInputEvt.INPUT_UPDATED:
 				displayShape = cursorIDToDisplayShape.get(c);
-				if (displayShape != null){
-					displayShape.setPositionGlobal(position);
-				}
 				break;
 			case AbstractCursorInputEvt.INPUT_ENDED:
 				displayShape = cursorIDToDisplayShape.remove(c);
-				if (displayShape != null){
-					displayShape.destroy();
-				}
 				break;
 			default:
 				break;
+			}
+			if (displayShape != null){
+				drawDisplayComponent(graphics, displayShape, position);
 			}
 		}
 	}

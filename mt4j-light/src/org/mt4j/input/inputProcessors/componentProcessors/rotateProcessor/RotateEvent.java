@@ -17,7 +17,7 @@
  ***********************************************************************/
 package org.mt4j.input.inputProcessors.componentProcessors.rotateProcessor;
 
-import org.mt4j.components.interfaces.IMTComponent3D;
+import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputProcessors.IInputProcessor;
 import org.mt4j.input.inputProcessors.MTGestureEvent;
@@ -58,7 +58,7 @@ public class RotateEvent extends MTGestureEvent {
 	 * @param rotationPoint the rotation point
 	 * @param rotationDegrees the rotation degrees
 	 */
-	public RotateEvent(IInputProcessor source, int id, IMTComponent3D targetComponent, InputCursor firstFingerMotion, InputCursor secondFingerMotion, Vector3D translationVector, Vector3D rotationPoint, float rotationDegrees) {
+	public RotateEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstFingerMotion, InputCursor secondFingerMotion, Vector3D translationVector, Vector3D rotationPoint, float rotationDegrees) {
 		super(source, id, targetComponent);
 		this.firstFingerMotion = firstFingerMotion;
 		this.secondFingerMotion = secondFingerMotion;

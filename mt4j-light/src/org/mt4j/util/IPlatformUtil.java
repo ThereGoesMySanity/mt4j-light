@@ -1,7 +1,5 @@
 package org.mt4j.util;
 
-import org.mt4j.util.opengl.IGLU;
-
 import processing.core.PGraphics;
 import processing.core.PMatrix3D;
 
@@ -26,9 +24,6 @@ public PGraphics getPGraphics();
 	public float getCameraFar();
 	
 	public int getPlatform();
-
-	public IGLU getGLU();
-
 	public PMatrix3D getProjection();
 
 	public boolean isBigEndian();

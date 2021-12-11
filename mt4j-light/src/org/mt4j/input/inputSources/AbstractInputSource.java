@@ -22,8 +22,9 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 import org.mt4j.AbstractMTApplication;
+import org.mt4j.AbstractMTLayer;
+import org.mt4j.IPreDrawAction;
 import org.mt4j.input.inputData.MTInputEvent;
-import org.mt4j.sceneManagement.IPreDrawAction;
 import org.mt4j.util.ArrayDeque;
 
 
@@ -59,13 +60,17 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 		inputProcessorsToFireTo = new ArrayList<IinputSourceListener>(10);
 	} 
 	
+	public void addLayer(AbstractMTLayer<?> layer) {
+	}
 	
+	public void removeLayer(AbstractMTLayer<?> layer) {
+	}
+
 	/**
 	 * Called by the inputmanager when this inputsource is registered with the application.
 	 * This method should not be invoked directly!
 	 */
 	public void onRegistered(){
-//		app.registerPre(this); //Make processing call this class' pre() method at the beginning of each frame
 		app.registerPreDrawAction(this);
 	}
 	
@@ -74,7 +79,6 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	 * This method should not be invoked directly!
 	 */
 	public void onUnregistered(){
-//		app.unregisterPre(this);
 		app.unregisterPreDrawAction(this);
 	}
 	
@@ -82,6 +86,7 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	/* (non-Javadoc)
 	 * @see org.mt4j.sceneManagement.IPreDrawAction#processAction()
 	 */
+	@Override
 	public void processAction() {
 		pre();
 	}
@@ -89,6 +94,7 @@ public abstract class AbstractInputSource implements IPreDrawAction {
 	/* (non-Javadoc)
 	 * @see org.mt4j.sceneManagement.IPreDrawAction#isLoop()
 	 */
+	@Override
 	public boolean isLoop() {
 		return true;
 	}

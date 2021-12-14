@@ -20,11 +20,13 @@ package org.mt4j.input.inputSources;
 import java.awt.Window;
 import java.util.HashMap;
 
+import com.sun.jna.platform.win32.VersionHelpers;
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.input.inputData.ActiveCursorPool;
 import org.mt4j.input.inputData.InputCursor;
 import org.mt4j.input.inputData.MTFingerInputEvt;
 import org.mt4j.input.inputData.MTWin7TouchInputEvt;
+import org.mt4j.util.NativeLibs;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 
@@ -103,7 +105,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		logger.debug("Platform: \"" + platform + "\"");
 		
 //		/*
-		if (!platform.contains("windows 7")) {
+		if (!VersionHelpers.IsWindows7OrGreater()) {
 			logger.error("Win7NativeTouchSource input source can only be used on platforms running windows 7!");
 			return;
 		}
@@ -111,7 +113,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		if (!loaded){
 			loaded = true;
 			String dllName = (Platform.is64Bit())? dllName64 : dllName32;
-			System.loadLibrary(dllName);
+			NativeLibs.loadNativeLibrary(dllName);
 //			System.load(System.getProperty("user.dir") + File.separator + dllName + ".dll");
 		}else{
 			logger.error("Win7NativeTouchSource may only be instantiated once.");

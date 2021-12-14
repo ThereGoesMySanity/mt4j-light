@@ -50,7 +50,6 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * Instantiates a new cursor tracer.
 	 * 
 	 * @param mtApp the mt app
-	 * @param currentScene the current scene
 	 */
 	public CursorTracer(AbstractMTApplication mtApp){
 		this.cursorIDToDisplayShape = new HashMap<InputCursor, RectangularShape>();
@@ -59,14 +58,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 //			ellipseRadius = 30;
 //		}
 	}
-	/**
-	 * Creates the display component.
-	 * 
-	 * @param applet the applet
-	 * @param position the position
-	 * 
-	 * @return the abstract shape
-	 */
+
 	protected void drawDisplayComponent(AbstractMTLayer<?> layer, RectangularShape displayShape, Point2D.Float position){
 		Graphics2D g = layer.getGraphics();
 		g.setStroke(new BasicStroke(2));
@@ -100,7 +92,8 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 				displayShape = cursorIDToDisplayShape.get(c);
 				break;
 			case AbstractCursorInputEvt.INPUT_ENDED:
-				displayShape = cursorIDToDisplayShape.remove(c);
+				cursorIDToDisplayShape.remove(c);
+				layer.getLayer().repaint();
 				break;
 			default:
 				break;

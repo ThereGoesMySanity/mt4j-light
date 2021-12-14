@@ -9,7 +9,10 @@ import javax.swing.WindowConstants;
 
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.AbstractMTLayer;
+import org.mt4j.input.inputProcessors.MTGestureEvent;
 import org.mt4j.input.inputProcessors.componentProcessors.panProcessor.PanProcessorTwoFingers;
+import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomEvent;
+import org.mt4j.input.inputProcessors.componentProcessors.zoomProcessor.ZoomProcessor;
 import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.util.logging.Log4jLogger;
 import org.mt4j.util.logging.MTLoggerFactory;
@@ -27,8 +30,19 @@ public class SimpleSwing extends AbstractMTApplication {
 		AbstractMTApplication app = new SimpleSwing(frame);
 		app.registerGlobalInputProcessor(new CursorTracer(app));
 
-		AbstractMTLayer<JPanel> touchLayer = new AbstractMTLayer<JPanel>(app);
+		AbstractMTLayer<JPanel> touchLayer = new AbstractMTLayer<JPanel>(app)
+		{
+			@Override
+			public boolean processGestureEvent(MTGestureEvent ge) {
+				System.out.println(ge.getId());
+				if (ge instanceof ZoomEvent) {
+					System.out.println(((ZoomEvent) ge).getCamZoomAmount());
+				}
+				return true;
+			}
+		};
 		touchLayer.registerInputProcessor(new PanProcessorTwoFingers(500));
+		touchLayer.registerInputProcessor(new ZoomProcessor(500));
 		JLayer<JPanel> layer = new JLayer<JPanel>(panel, touchLayer);
 		frame.add(layer);
 		

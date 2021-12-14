@@ -32,7 +32,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.plaf.LayerUI;
 
 import org.mt4j.input.ComponentInputProcessorSupport;
-import org.mt4j.input.GestureEventSupport;
 import org.mt4j.input.IMTInputEventListener;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputData.MTInputEvent;
@@ -61,7 +60,7 @@ import org.mt4j.util.logging.ILogger;
  * @author Christopher Ruff
  * @param <T>
  */
-public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements IGestureEventListener {
+public abstract class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements IGestureEventListener {
 	/** The Constant logger. */
 	protected static ILogger logger;
 	
@@ -81,9 +80,6 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 	/** The input processors support. */
 	private ComponentInputProcessorSupport inputProcessorsSupport;
 	
-	/** The gesture evt support. */
-	private GestureEventSupport gestureEvtSupport;
-	
 	/** The allowed gestures. */
 	private ArrayList<Class<? extends IInputProcessor>> allowedGestures;
 	
@@ -94,14 +90,13 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 	public AbstractMTLayer(AbstractMTApplication app) {
 		this.app = app;
 		inputManager = app.getInputManager();
-		allowedGestures = new ArrayList<Class<? extends IInputProcessor>>(5);
+		allowedGestures = new ArrayList<>(5);
 
-		this.inputListeners = new ArrayList<IMTInputEventListener>(3);
+		this.inputListeners = new ArrayList<>(3);
 
 		this.inputProcessorsSupport = new ComponentInputProcessorSupport(app, this);
 		this.addInputListener(inputProcessorsSupport);
 
-		this.gestureEvtSupport = new GestureEventSupport();
 		initGraphics(1, 1);
 	}
 	
@@ -118,8 +113,8 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 		if (!currentSize.equals(new Dimension(overlay.getWidth(), overlay.getHeight()))) {
 			initGraphics(currentSize.width, currentSize.height);
 		} else {
-			graphics.setColor(new Color(0, 0, 0, 0));
-			graphics.fillRect(0, 0, (int)currentSize.width, (int)currentSize.height);
+			graphics.setBackground(new Color(0, 0, 0, 0));
+			graphics.clearRect(0, 0, (int)currentSize.width, (int)currentSize.height);
 		}
 	}
 
@@ -261,60 +256,6 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 	// INPUT HANDLER ////////////////////////////////////////
 
 	
-	// GESTURE LISTENER EVENT SUPPORT ///////////////////////////////////////
-	/**
-	 * Adds a gesture listener to this component. The specified gesture listener's 
-	 * <code>processGestureEvent(..)</code> method will be called when a gesture event 
-	 * is processed by this component. The <code>IInputProcessor</code> paramter type specifies the source of
-	 * the gesture event we are interested in. So to listen to drag events only for example, we would specify
-	 * the <code>DragProcessor.class</code> as the first parameter.
-	 * 
-	 * @param gestureEvtSender the gesture evt sender
-	 * @param listener the listener
-	 */
-	public void addGestureListener(Class<? extends IInputProcessor> gestureEvtSender, IGestureEventListener listener){
-		this.gestureEvtSupport.addGestureEvtListener(gestureEvtSender, listener);
-	}
-	
-	/**
-	 * Removes the gesture event listener.
-	 * @param gestureEvtSender the gesture evt sender
-	 * @param listener the listener
-	 */
-	public void removeGestureEventListener(Class<? extends IInputProcessor> gestureEvtSender, IGestureEventListener listener) {
-		gestureEvtSupport.removeGestureEventListener(gestureEvtSender, listener);
-	}
-	
-	/**
-	 * Removes the all gesture event listeners.
-	 */
-	public void removeAllGestureEventListeners() {
-		this.gestureEvtSupport.clearListeners();
-	}
-	
-	/**
-	 * Removes the all gesture event listeners who listen to the specified input processor.
-	 * @param gestureEvtSender the gesture evt sender
-	 */
-	public void removeAllGestureEventListeners(Class<? extends IInputProcessor> gestureEvtSender) {
-		IGestureEventListener[] l = this.getGestureListeners();
-        for (IGestureEventListener gestureEventListener : l) {
-            this.removeGestureEventListener(gestureEvtSender, gestureEventListener);
-        }
-	}
-	
-	/**
-	 * Returns the gesture listeners.
-	 * @return the gesture listeners
-	 */
-	public final IGestureEventListener[] getGestureListeners() {
-		return gestureEvtSupport.getListeners();
-	}
-	// GESTURE LISTENER EVENT SUPPORT ///////////////////////////////////////
-
-
-	
-	
 	//@Override
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.interfaces.IMTComponent#processInputEvent(org.mt4j.input.inputData.MTInputEvent)
@@ -335,59 +276,9 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 				this.dispatchInputEvent(inEvt);
 			}
 		}
-		
-		
-//		if (inEvt.getBubbles() && !inEvt.isPropagationStopped() && inEvt.getEventPhase() == MTInputEvent.AT_TARGET){
-//			inEvt.setEventPhase(MTInputEvent.BUBBLING_PHASE);	
-//		}
-//
-//		if (inEvt.getBubbles() && !inEvt.isPropagationStopped() && inEvt.getEventPhase() == MTInputEvent.BUBBLING_PHASE){
-//			MTComponent theParent = this.getParent();
-//			if (theParent != null){
-//				inEvt.setCurrentTarget(theParent);
-//				theParent.processInputEvent(inEvt);
-//				//TODO (register interest in cursors -> done automatically?)
-//				//TODO use getCurrentTarget in all inputProcessors, at least at sending the event - also at canvas processors?
-//				//TODO (check if currentTarget = this component in processorsupport? -> not really needed, make optional?)
-//				//TODO remove default input processors form AbstractShape! -> make helper instead -> also remove from SVGs
-//				//TODO in inputprocessors always intersect current target -> is the actual target also chcked then? -> to get composite effect..
-//				//TODO in inputprocessors get intersection points using the cursors getTarget() -> because one cursors target may be different than the other cursor now 
-//				//TODO if no input processor is registered all events are bubbled up - prevent that by default? - how?
-//				//TODO also allow bubbling of MTGestureEvents?
-//				//TODO in inputprocessors intersect with target and if no hit- with currenttarget?
-//				
-//				//FIXME if cursor is unlocked in dispatchInputEvent(), unlocked() may be called in an I.P. up the tree, but currentTarget is still the same as target!
-//				
-//				//TODO send locked() signal only to those who currently lock the cursor (not all lower priority ones)
-//				
-//				//FIXME use headMap -> inclusive = false? so it doesent send cursorLocked to some with same priority in cursorLockedByHigherPriorityGesture
-//				
-//				//TODO why only rotate processor registered at Keyboard when switching to rot/scale at parent?
-//				
-//				//TODO priorities-> float
-//				//TODO tap prior > drag prior -> really default that?
-//				//TODO (abort tap if moved too much -> start drag/scale)
-//			}
-//		}
-		
 		return false;
 	}
 
-	
-	/**
-	 * Processes gesture events.<br>
-	 * Fires the specified gesture event to the attached IGestureEventListers of this component.
-	 * 
-	 * @param gestureEvent the gesture event
-	 * @return true, if successful
-	 */
-	@Override
-	public boolean processGestureEvent(MTGestureEvent gestureEvent){
-		this.gestureEvtSupport.fireGestureEvt(gestureEvent);
-		System.out.println("processGestureEvent: gestureEvent source: " + gestureEvent.getSource() +" ID: " +  gestureEvent.getId());
-		return false;
-	}
-	
 	/* (non-Javadoc)
 	 * @see org.mt4j.components.interfaces.IMTComponent#isGestureAllowed(java.lang.Class)
 	 */
@@ -406,9 +297,7 @@ public class AbstractMTLayer<T extends JComponent> extends LayerUI<T> implements
 				this.allowedGestures.add(c);
 			}
 		}else{
-			if (this.allowedGestures.contains(c)){
-				this.allowedGestures.remove(c);
-			}
+			this.allowedGestures.remove(c);
 		}
 	}
 

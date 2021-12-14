@@ -1,5 +1,7 @@
 package com.dgis.input.evdev;
 
+import org.mt4j.util.NativeLibs;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -163,7 +165,7 @@ public class EventDevice implements IEventDevice{
 	 * @throws IOException If the device is not found, or is otherwise inaccessible.
 	 */
 	public EventDevice(String device) throws IOException {
-		System.loadLibrary("evdev-java");
+		NativeLibs.loadNativeLibrary("evdev-java");
 		this.device = device;
 		inputBuffer.order(ByteOrder.LITTLE_ENDIAN);
 		initDevice();

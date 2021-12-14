@@ -37,6 +37,9 @@ public class ZoomEvent extends MTGestureEvent {
 	
 	/** The cam zoom amount. */
 	private float camZoomAmount;
+
+	private float zoomRatio;
+	private float distance;
 	
 	/**
 	 * Instantiates a new zoom event.
@@ -47,13 +50,14 @@ public class ZoomEvent extends MTGestureEvent {
 	 * @param firstCursor the first cursor
 	 * @param secondCursor the second cursor
 	 * @param camZoomAmount the cam zoom amount
-	 * @param camera the camera
 	 */
 	public ZoomEvent(IInputProcessor source, int id, AbstractMTLayer<?> targetComponent, InputCursor firstCursor, InputCursor secondCursor, float camZoomAmount) {
 		super(source, id, targetComponent);
 		this.firstCursor = firstCursor;
 		this.secondCursor = secondCursor;
 		this.camZoomAmount = camZoomAmount;
+		this.distance = (float)firstCursor.getPosition().distance(secondCursor.getPosition());
+		this.zoomRatio = distance / (distance - camZoomAmount);
 	}
 
 	/**
@@ -63,6 +67,14 @@ public class ZoomEvent extends MTGestureEvent {
 	 */
 	public float getCamZoomAmount() {
 		return camZoomAmount;
+	}
+
+	public float getZoomRatio() {
+		return zoomRatio;
+	}
+
+	public float getDistance() {
+		return distance;
 	}
 
 	/**

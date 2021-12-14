@@ -127,7 +127,6 @@ public abstract class AbstractCursorProcessor extends AbstractComponentProcessor
 			cursorUnlocked.getCurrentEvent().setCurrentTarget(saved); //FIXME Hack
 		}
 		////////////////////////////
-		System.out.println(posEvt.getId() + " " + activeCursors.size());
 		switch (posEvt.getId()) {
 		case AbstractCursorInputEvt.INPUT_STARTED:
 //			activeCursors.add(c);

@@ -15,6 +15,7 @@ plugins {
 	id 'java-library'
     id 'maven-publish'
     id 'signing'
+    id 'application'
 }
 
 apply plugin: 'java'
@@ -40,7 +41,8 @@ dependencies {
 sourceSets {
     main {
         java {
-            srcDir 'src'
+            srcDirs 'src'
+            srcDirs 'examples'
         }
         resources {
             srcDir 'native/lib'
@@ -53,6 +55,7 @@ sourceSets {
 publishing {
 	publications {
 		mavenJava(MavenPublication) {
+			groupId = group
 			artifactId = 'mt4j-light'
 			from components.java
 		}
@@ -61,4 +64,8 @@ publishing {
 
 jar {
 
+}
+
+application {
+    mainClass = 'basic.SimpleSwing'
 }

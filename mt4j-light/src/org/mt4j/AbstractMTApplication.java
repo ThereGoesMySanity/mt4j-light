@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.mt4j.input.DesktopInputManager;
 import org.mt4j.input.InputManager;
+import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 
 import java.awt.Window;
 import java.awt.Point;
@@ -90,6 +91,10 @@ public abstract class AbstractMTApplication implements IMTApplication {
 				});
 			}
 		}
+	}
+	
+	public void registerGlobalInputProcessor(AbstractGlobalInputProcessor processor){
+		getInputManager().registerGlobalInputProcessor(processor);
 	}
 	
 	/**

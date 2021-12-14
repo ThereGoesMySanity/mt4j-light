@@ -67,11 +67,13 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 	 * 
 	 * @return the abstract shape
 	 */
-	protected void drawDisplayComponent(Graphics2D g, RectangularShape displayShape, Point2D.Float position){
+	protected void drawDisplayComponent(AbstractMTLayer<?> layer, RectangularShape displayShape, Point2D.Float position){
+		Graphics2D g = layer.getGraphics();
 		g.setStroke(new BasicStroke(2));
 		g.setColor(new Color(100, 130, 220, 255));
 		displayShape.setFrameFromCenter(position.x, position.y, position.x + ellipseRadius, position.y + ellipseRadius);
 		g.draw(displayShape);
+		layer.getLayer().repaint();
 	}
 	
 
@@ -86,7 +88,6 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 			Point2D.Float position = new Point2D.Float(cursorEvt.getX(), cursorEvt.getY());
 			
 			AbstractMTLayer<?> layer = (AbstractMTLayer<?>)c.getTarget();
-			Graphics2D graphics = layer.getGraphics();
 
 			RectangularShape displayShape = null;
 			switch (cursorEvt.getId()) {
@@ -105,7 +106,7 @@ public class CursorTracer extends AbstractGlobalInputProcessor{
 				break;
 			}
 			if (displayShape != null){
-				drawDisplayComponent(graphics, displayShape, position);
+				drawDisplayComponent(layer, displayShape, position);
 			}
 		}
 	}

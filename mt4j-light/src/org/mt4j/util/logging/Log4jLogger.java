@@ -3,7 +3,6 @@ package org.mt4j.util.logging;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.SimpleLayout;
 
 public class Log4jLogger implements ILogger {
 	private Logger logger;
@@ -13,8 +12,7 @@ public class Log4jLogger implements ILogger {
 	private Log4jLogger(String name){
 		this.logger = Logger.getLogger(name);
 		//System.out.println("Created logger: " + logger);
-		SimpleLayout l = new SimpleLayout();
-		ConsoleAppender ca = new ConsoleAppender(l);
+		ConsoleAppender ca = new ConsoleAppender();
 		logger.addAppender(ca);
 	}
 

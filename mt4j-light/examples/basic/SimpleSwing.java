@@ -10,6 +10,7 @@ import javax.swing.WindowConstants;
 import org.mt4j.AbstractMTApplication;
 import org.mt4j.AbstractMTLayer;
 import org.mt4j.input.inputProcessors.componentProcessors.panProcessor.PanProcessorTwoFingers;
+import org.mt4j.input.inputProcessors.globalProcessors.CursorTracer;
 import org.mt4j.util.logging.Log4jLogger;
 import org.mt4j.util.logging.MTLoggerFactory;
 
@@ -24,6 +25,7 @@ public class SimpleSwing extends AbstractMTApplication {
 		JPanel panel = new JPanel();
 		MTLoggerFactory.setLoggerProvider(new Log4jLogger());
 		AbstractMTApplication app = new SimpleSwing(frame);
+		app.registerGlobalInputProcessor(new CursorTracer(app));
 
 		AbstractMTLayer<JPanel> touchLayer = new AbstractMTLayer<JPanel>(app);
 		touchLayer.registerInputProcessor(new PanProcessorTwoFingers(500));

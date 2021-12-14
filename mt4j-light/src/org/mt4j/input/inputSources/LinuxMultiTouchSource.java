@@ -132,7 +132,7 @@ public class LinuxMultiTouchSource extends AbstractInputSource {
 			AbstractMTLayer<?> layer;
 			InputCursor cursor = null;
 			if (c.eventType == MTFingerInputEvt.INPUT_STARTED) {
-				layer = app.findLayer(location);
+				layer = app.findLayer(location, false);
 				cursor = new InputCursor();
 				c.cursorId = cursor.getId();
 				ActiveCursorPool.getInstance().putActiveCursor(cursor.getId(), cursor);
@@ -141,7 +141,7 @@ public class LinuxMultiTouchSource extends AbstractInputSource {
 				layer = cursor.getTarget();
 			}
 			if (layer != null) {
-				layer.convertToLayer(location);
+				location = layer.convertScreenToLayer(location);
 				AbstractCursorInputEvt evt = new MTLinuxTouchInputEvt(LinuxMultiTouchSource.this, location.x, location.y, c.eventType, cursor);
 				evt.setTarget(layer);
 				enqueueInputEvent(evt);

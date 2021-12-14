@@ -1,7 +1,5 @@
 package basic;
 
-import java.awt.Window;
-
 import javax.swing.JFrame;
 import javax.swing.JLayer;
 import javax.swing.JPanel;
@@ -19,12 +17,13 @@ import org.mt4j.util.logging.MTLoggerFactory;
 
 public class SimpleSwing extends AbstractMTApplication {
 
-	public SimpleSwing(Window window) {
+	public SimpleSwing(JFrame window) {
 		super(window);
 	}
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
+		frame.setLayout(null);
 		JPanel panel = new JPanel();
 		MTLoggerFactory.setLoggerProvider(new Log4jLogger());
 		AbstractMTApplication app = new SimpleSwing(frame);
@@ -45,6 +44,7 @@ public class SimpleSwing extends AbstractMTApplication {
 		touchLayer.registerInputProcessor(new ZoomProcessor(500));
 		JLayer<JPanel> layer = new JLayer<JPanel>(panel, touchLayer);
 		frame.add(layer);
+		layer.setBounds(100, 100, 540, 380);
 		
 		frame.setSize(640, 480);
 		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

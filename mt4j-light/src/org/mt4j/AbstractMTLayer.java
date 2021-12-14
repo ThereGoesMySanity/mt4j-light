@@ -67,9 +67,6 @@ public abstract class AbstractMTLayer<T extends JComponent> extends LayerUI<T> i
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
-	/** The input manager. */
-	private InputManager inputManager;
-	
 	protected JLayer<T> layer;
 	
 	private AbstractMTApplication app;
@@ -89,7 +86,6 @@ public abstract class AbstractMTLayer<T extends JComponent> extends LayerUI<T> i
 
 	public AbstractMTLayer(AbstractMTApplication app) {
 		this.app = app;
-		inputManager = app.getInputManager();
 		allowedGestures = new ArrayList<>(5);
 
 		this.inputListeners = new ArrayList<>(3);
@@ -134,14 +130,6 @@ public abstract class AbstractMTLayer<T extends JComponent> extends LayerUI<T> i
 		app.removeLayer(this);
 	}
 
-	public InputManager getInputManager() {
-		return inputManager;
-	}
-
-	public void setInputManager(InputManager inputManager) {
-		this.inputManager = inputManager;
-	}
-	
 	public JLayer<T> getLayer() {
 		return layer;
 	}
@@ -151,13 +139,17 @@ public abstract class AbstractMTLayer<T extends JComponent> extends LayerUI<T> i
 	}
 	
 	public boolean isInLayer(Point pt) {
-		Point p = (Point) pt.clone();
-		return convertToLayer(p);
+		Point p = convertWindowToLayer(pt);
+		return contains(getLayer(), p.x, p.y);
 	}
-	
-	public boolean convertToLayer(Point pt) {
-		SwingUtilities.convertPointFromScreen(pt, getLayer());
-		return contains(getLayer(), pt.x, pt.y);
+	public Point convertScreenToLayer(Point pt) {
+		Point p = new Point(pt);
+		SwingUtilities.convertPointFromScreen(p, getLayer());
+		return p;
+	}
+
+	public Point convertWindowToLayer(Point pt) {
+		return SwingUtilities.convertPoint(app.getWindow().getRootPane(), pt, getLayer());
 	}
 	// INPUT LISTENER STUF ////
 	/**

@@ -9,24 +9,24 @@ import org.mt4j.input.DesktopInputManager;
 import org.mt4j.input.InputManager;
 import org.mt4j.input.inputProcessors.globalProcessors.AbstractGlobalInputProcessor;
 
-import java.awt.Window;
+import javax.swing.*;
 import java.awt.Point;
 
 public abstract class AbstractMTApplication implements IMTApplication {
 	private List<AbstractMTLayer<?>> layers;
 	private InputManager manager;
-	private Window window;
+	private JFrame window;
 	protected ArrayDeque<IPreDrawAction> preDrawActions;
 	private ArrayDeque<Runnable> invokeLaterActions;
 	
 	private Thread updateThread;
 	private float updateRate = 60;
 
-	public AbstractMTApplication(Window window) {
+	public AbstractMTApplication(JFrame window) {
 		this(window, true);
 	}
 	
-	public AbstractMTApplication(Window window, boolean threaded) {
+	public AbstractMTApplication(JFrame window, boolean threaded) {
 		this.window = window;
 		preDrawActions = new ArrayDeque<IPreDrawAction>();
 		invokeLaterActions = new ArrayDeque<Runnable>();
@@ -140,7 +140,7 @@ public abstract class AbstractMTApplication implements IMTApplication {
 		layers.remove(layer);
 	}
 	
-	public Window getWindow() {
+	public JFrame getWindow() {
 		return window;
 	}
 
@@ -162,8 +162,12 @@ public abstract class AbstractMTApplication implements IMTApplication {
 		this.updateRate = updateRate;
 	}
 
-	public AbstractMTLayer<?> findLayer(Point p) {
-		return layers.stream().filter((AbstractMTLayer<?> l) -> l.isInLayer(p)).findFirst().orElse(null);
+	public AbstractMTLayer<?> findLayer(Point p, boolean local) {
+		Point tempP = new Point(p);
+		if (!local) {
+			SwingUtilities.convertPointFromScreen(tempP, getWindow().getRootPane());
+		}
+		return layers.stream().filter((AbstractMTLayer<?> l) -> l.isInLayer(tempP)).findFirst().orElse(null);
 	}
 
 }

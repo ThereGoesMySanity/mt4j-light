@@ -17,15 +17,16 @@
  ***********************************************************************/
 package org.mt4j.input.inputSources;
 
-import java.awt.Window;
+import java.awt.*;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.awt.event.WindowStateListener;
 import java.util.HashMap;
 
 import com.sun.jna.platform.win32.VersionHelpers;
 import org.mt4j.AbstractMTApplication;
-import org.mt4j.input.inputData.ActiveCursorPool;
-import org.mt4j.input.inputData.InputCursor;
-import org.mt4j.input.inputData.MTFingerInputEvt;
-import org.mt4j.input.inputData.MTWin7TouchInputEvt;
+import org.mt4j.AbstractMTLayer;
+import org.mt4j.input.inputData.*;
 import org.mt4j.util.NativeLibs;
 import org.mt4j.util.logging.ILogger;
 import org.mt4j.util.logging.MTLoggerFactory;
@@ -40,7 +41,7 @@ import com.sun.jna.Platform;
  * @author C.Ruff
  *
  */
-public class Win7NativeTouchSource extends AbstractInputSource {
+public class Win7NativeTouchSource extends AbstractInputSource implements WindowListener {
 	/** The Constant logger. */
 	private static final ILogger logger = MTLoggerFactory.getLogger(Win7NativeTouchSource.class.getName());
 	static{
@@ -138,19 +139,9 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		initialized = false;
 		
 		touchToCursorID = new HashMap<Integer, Long>();
-		
+
 		this.getNativeWindowHandles();
 		success = true;
-		
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				if (isSuccessfullySetup()){
-					logger.debug("Cleaning up Win7 touch source..");
-					quit();
-				}
-			}
-		}));
 	}
 
 	
@@ -172,51 +163,32 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 					wmTouchEvent.type = Native_WM_TOUCH_Event.TOUCH_DOWN;
 				}
 				 */
-				
-				switch (wmTouchEvent.type) {
-				case Native_WM_TOUCH_Event.TOUCH_DOWN:{
-//					logger.debug("TOUCH_DOWN ==> ID:" + wmTouchEvent.id + " x:" +  wmTouchEvent.x + " y:" +  wmTouchEvent.y);
-					
-					InputCursor c = new InputCursor();
-					long cursorID = c.getId();
-					MTWin7TouchInputEvt touchEvt = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_STARTED, c);
+				Point location = new Point(wmTouchEvent.x, wmTouchEvent.y);
+				AbstractMTLayer<?> layer;
+				InputCursor cursor = null;
+				long cursorId;
+				if (wmTouchEvent.type == Native_WM_TOUCH_Event.TOUCH_DOWN) {
+					layer = app.findLayer(location, true);
+					cursor = new InputCursor();
+					cursorId = cursor.getId();
 					int touchID = wmTouchEvent.id;
-					ActiveCursorPool.getInstance().putActiveCursor(cursorID, c);
-					touchToCursorID.put(touchID, cursorID);
-					this.enqueueInputEvent(touchEvt);
-					
-					break;
-				}case Native_WM_TOUCH_Event.TOUCH_MOVE:{
-//					logger.debug("TOUCH_MOVE ==> ID:" + wmTouchEvent.id + " x:" +  wmTouchEvent.x + " y:" +  wmTouchEvent.y);
-//					System.out.println("Contact area X:" + wmTouchEvent.contactSizeX + " Y:" + wmTouchEvent.contactSizeY);
-					
-					Long cursorID = touchToCursorID.get(wmTouchEvent.id);
-					if (cursorID != null){
-						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
-						if (c != null){
-							MTWin7TouchInputEvt te = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_UPDATED, c);
-							this.enqueueInputEvent(te);	
-						}
-					}
-					
-					break;
-				}case Native_WM_TOUCH_Event.TOUCH_UP:{
-//					logger.debug("TOUCH_UP ==> ID:" + wmTouchEvent.id + " x:" +  wmTouchEvent.x + " y:" +  wmTouchEvent.y);
-
-					Long cursorID = touchToCursorID.get(wmTouchEvent.id);
-					if (cursorID != null){
-						InputCursor c = ActiveCursorPool.getInstance().getActiveCursorByID(cursorID);
-						if (c != null){
-							MTWin7TouchInputEvt te = new MTWin7TouchInputEvt(this, wmTouchEvent.x, wmTouchEvent.y, wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, MTFingerInputEvt.INPUT_ENDED, c);
-							this.enqueueInputEvent(te);
-						}
-						ActiveCursorPool.getInstance().removeCursor(cursorID);
-						touchToCursorID.remove(wmTouchEvent.id);
-					}
-					
-					break;
-				}default:
-					break;
+					touchToCursorID.put(touchID, cursorId);
+					ActiveCursorPool.getInstance().putActiveCursor(cursorId, cursor);
+				} else {
+					cursorId = touchToCursorID.get(wmTouchEvent.id);
+					cursor = ActiveCursorPool.getInstance().getActiveCursorByID(cursorId);
+					layer = cursor.getTarget();
+				}
+				if (layer != null) {
+					location = layer.convertWindowToLayer(location);
+					AbstractCursorInputEvt evt = new MTWin7TouchInputEvt(this, location.x, location.y,
+							wmTouchEvent.contactSizeX, wmTouchEvent.contactSizeY, wmTouchEvent.type, cursor);
+					evt.setTarget(layer);
+					enqueueInputEvent(evt);
+				}
+				if (wmTouchEvent.type == Native_WM_TOUCH_Event.TOUCH_UP) {
+					ActiveCursorPool.getInstance().removeCursor(cursorId);
+					touchToCursorID.remove(wmTouchEvent.id);
 				}
 			}
 		}
@@ -233,13 +205,7 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 		}
 
 		Window window = app.getWindow();
-		int awtCanvasHandle = 0;
-		try {
-			awtCanvasHandle = (int)Native.getWindowID(window);
-			setSunAwtCanvasHandle(awtCanvasHandle);
-		} catch (Exception e) {
-			System.err.println(e.getMessage());
-		}
+		window.addWindowListener(this);
 	}
 
 	
@@ -264,8 +230,53 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 			logger.error("-> Couldnt retrieve the SunAwtCanvas handle!");
 		}
 	}
-	
-	private class Native_WM_TOUCH_Event{
+
+	@Override
+	public void windowOpened(WindowEvent e) {
+		Window window = e.getWindow();
+		int awtCanvasHandle = 0;
+		try {
+			awtCanvasHandle = (int)Native.getWindowID(window);
+			setSunAwtCanvasHandle(awtCanvasHandle);
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	@Override
+	public void windowClosing(WindowEvent e) {
+		if (isSuccessfullySetup()){
+			logger.debug("Cleaning up Win7 touch source..");
+			quit();
+		}
+	}
+
+	@Override
+	public void windowClosed(WindowEvent e) {
+
+	}
+
+	@Override
+	public void windowIconified(WindowEvent e) {
+
+	}
+
+	@Override
+	public void windowDeiconified(WindowEvent e) {
+
+	}
+
+	@Override
+	public void windowActivated(WindowEvent e) {
+
+	}
+
+	@Override
+	public void windowDeactivated(WindowEvent e) {
+
+	}
+
+	private static class Native_WM_TOUCH_Event{
 		//can be real enums in Java 5.0.
 	    /** The Constant TOUCH_DOWN. */
 	    public static final int TOUCH_DOWN = 0;
@@ -294,5 +305,4 @@ public class Win7NativeTouchSource extends AbstractInputSource {
 	    /** The contact size area Y dimension */
 	    public int contactSizeY;
 	}
-
 }

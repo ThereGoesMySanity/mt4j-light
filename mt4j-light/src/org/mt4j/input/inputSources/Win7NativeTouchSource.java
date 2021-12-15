@@ -164,7 +164,7 @@ public class Win7NativeTouchSource extends AbstractInputSource implements Window
 				}
 				 */
 				Point location = new Point(wmTouchEvent.x, wmTouchEvent.y);
-				AbstractMTLayer<?> layer;
+				AbstractMTLayer<?> layer = null;
 				InputCursor cursor = null;
 				long cursorId;
 				if (wmTouchEvent.type == Native_WM_TOUCH_Event.TOUCH_DOWN) {
@@ -174,7 +174,7 @@ public class Win7NativeTouchSource extends AbstractInputSource implements Window
 					int touchID = wmTouchEvent.id;
 					touchToCursorID.put(touchID, cursorId);
 					ActiveCursorPool.getInstance().putActiveCursor(cursorId, cursor);
-				} else {
+				} else if (touchToCursorID.containsKey(wmTouchEvent.id)){
 					cursorId = touchToCursorID.get(wmTouchEvent.id);
 					cursor = ActiveCursorPool.getInstance().getActiveCursorByID(cursorId);
 					layer = cursor.getTarget();

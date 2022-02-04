@@ -44,7 +44,7 @@ public class LinuxMultiTouchSource extends AbstractInputSource {
 
 	@SuppressWarnings("serial")
 	private static Map<String, Point> knownDevices = new HashMap<String, Point>(){{
-			put("G2Touch Multi-Touch by G2TSP", new Point(2240, 1440));
+			put("G2Touch Multi-Touch by G2TSP", new Point(3840, 0));
 	}};
 	private AbstractMTApplication app;
 	private List<LinuxTouchDevice> touchDevices = new ArrayList<>();

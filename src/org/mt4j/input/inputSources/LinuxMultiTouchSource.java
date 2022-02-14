@@ -88,11 +88,13 @@ public class LinuxMultiTouchSource extends AbstractInputSource {
 									.filter((Rectangle r) -> knownDevices.get(devName).equals(r.getLocation()))
 									.findFirst();
 						}
-						if (ev.getSupportedEvents().containsKey((int)InputEvent.EV_ABS) 
-								&& ev.getSupportedEvents().get((int)InputEvent.EV_ABS).contains((int)InputEvent.ABS_MT_SLOT)) {
-							touchDevices.add(new LinuxMultiTouchDevice(ev, mapping.orElse(defaultMapping)));
-						} else {
-							touchDevices.add(new LinuxSingleTouchDevice(ev, mapping.orElse(defaultMapping)));
+						if (mapping.isPresent()) {
+							if (ev.getSupportedEvents().containsKey((int)InputEvent.EV_ABS)
+									&& ev.getSupportedEvents().get((int)InputEvent.EV_ABS).contains((int)InputEvent.ABS_MT_SLOT)) {
+								touchDevices.add(new LinuxMultiTouchDevice(ev, mapping.orElse(defaultMapping)));
+							} else {
+								touchDevices.add(new LinuxSingleTouchDevice(ev, mapping.orElse(defaultMapping)));
+							}
 						}
 //					} else {
 //						//TODO: sometimes close() blocks forever?
